@@ -1,5 +1,3 @@
-*.png
-
 # Godot-specific ignores
 .import/
 addons/*
