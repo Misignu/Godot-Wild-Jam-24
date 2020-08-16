@@ -1,0 +1,21 @@
+[gd_scene format=2]
+
+[node name="EnergyIn2" type="Polygon2D"]
+position = Vector2( 200, 44 )
+rotation = 0.785398
+scale = Vector2( 0.4, 0.4 )
+polygon = PoolVector2Array( 0, 0, 0, 40, 40, 40, 40, 0 )
+
+[node name="Path1" type="Polygon2D" parent="."]
+position = Vector2( -1106.62, 569.221 )
+rotation = -0.785398
+scale = Vector2( 2.5, 2.5 )
+color = Color( 0.027451, 0.388235, 0.807843, 1 )
+polygon = PoolVector2Array( 466, 162, 434, 162, 434, 166, 466, 166 )
+
+[node name="Path2" type="Polygon2D" parent="."]
+position = Vector2( -1106.62, 569.221 )
+rotation = -0.785398
+scale = Vector2( 2.5, 2.5 )
+color = Color( 0.027451, 0.388235, 0.807843, 1 )
+polygon = PoolVector2Array( 472, 172, 472, 188, 476, 188, 476, 172 )

@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=2]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Polygon2D
+
+var is_charged: bool = true
+"
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 1.66666, 1.66667 )
+
+[node name="EnergyOut" type="Polygon2D" groups=[
+"energy_out",
+]]
+position = Vector2( 112, 48 )
+scale = Vector2( 1.2, 1.2 )
+polygon = PoolVector2Array( 0, 0, 0, 13.3333, 13.3333, 13.3333, 13.3333, 0 )
+script = SubResource( 1 )
+
+[node name="Path1" type="Polygon2D" parent="."]
+position = Vector2( -286.667, -150 )
+scale = Vector2( 0.833333, 0.833333 )
+color = Color( 0.027451, 0.388235, 0.807843, 1 )
+polygon = PoolVector2Array( 350, 196, 350, 206, 360, 206, 360, 202, 354, 202, 354, 196 )
+
+[node name="Area2D" type="Area2D" parent="."]
+position = Vector2( -3.33333, 0 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2( 13.3333, 20 )
+shape = SubResource( 2 )

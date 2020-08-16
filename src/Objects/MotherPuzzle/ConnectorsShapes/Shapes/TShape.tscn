@@ -1,0 +1,135 @@
+[gd_scene load_steps=3 format=2]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Polygon2D
+
+var is_charged: bool = false
+var transmitter1_charged: bool = false
+var transmitter2_charged: bool = false
+var transmitter3_charged: bool = false
+
+export var charged_color: = Color(0, 0, 241)
+export var uncharged_color: = Color(255, 255, 255)
+
+onready var receiver1: RayCast2D = $EnergyReceiver1
+onready var receiver2: RayCast2D = $EnergyReceiver2
+onready var receiver3: RayCast2D = $EnergyReceiver3
+
+
+# charged feedback
+func _process(_delta: float) -> void:
+	if is_charged:
+		color = charged_color
+	
+	else:
+		color = uncharged_color
+		
+
+
+# verifing if the shape is charged
+func _physics_process(_delta: float) -> void:
+	transmitter1_charged = is_receiver_charged(receiver1)
+	
+	transmitter2_charged = is_receiver_charged(receiver2)
+	
+	transmitter3_charged = is_receiver_charged(receiver3)
+	
+	if transmitter1_charged or transmitter2_charged or transmitter3_charged:
+		is_charged = true
+	
+	else:
+		is_charged = false
+
+
+func is_receiver_charged(receiver: RayCast2D):
+	if receiver.is_colliding():
+		var shape: Node = receiver.get_collider().get_parent()
+		
+		if shape.is_charged:
+			return true
+		
+		else:
+			return false
+		
+	else:
+		return false
+
+
+func call_discharge():
+	discharge(receiver1)
+	discharge(receiver2)
+	discharge(receiver3)
+
+
+func discharge(receiver: RayCast2D):
+	if receiver.is_colliding():
+		var shape: Node = receiver.get_collider().get_parent()
+		
+		if not shape.is_in_group(\"energy_out\"):
+			if shape.is_charged:
+				shape.is_charged = false
+				shape.transmitter1_charged = false
+				shape.transmitter2_charged = false
+				
+				if shape.is_in_group(\"t_shape\"):
+					shape.transmitter3_charged = false
+"
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 2, 2 )
+
+[node name="TShape" type="Polygon2D" groups=[
+"t_shape",
+]]
+polygon = PoolVector2Array( -2, -8, -2, 8, 2, 8, 2, 2, 8, 2, 8, -2, 2, -2, 2, -8 )
+script = SubResource( 1 )
+
+[node name="EnergyReceiver1" type="RayCast2D" parent="."]
+position = Vector2( 0, 8 )
+enabled = true
+cast_to = Vector2( 0, 4 )
+collide_with_areas = true
+collide_with_bodies = false
+
+[node name="EnergyReceiver2" type="RayCast2D" parent="."]
+position = Vector2( 0, -8 )
+rotation = 3.14159
+enabled = true
+cast_to = Vector2( 0, 4 )
+collide_with_areas = true
+collide_with_bodies = false
+
+[node name="EnergyReceiver3" type="RayCast2D" parent="."]
+position = Vector2( 8, 0 )
+rotation = -1.5708
+enabled = true
+cast_to = Vector2( 0, 4 )
+collide_with_areas = true
+collide_with_bodies = false
+
+[node name="EnergyTransmitter1" type="Area2D" parent="."]
+position = Vector2( 0, 2 )
+z_as_relative = false
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnergyTransmitter1"]
+position = Vector2( 0, -6 )
+shape = SubResource( 2 )
+
+[node name="EnergyTransmitter2" type="Area2D" parent="."]
+position = Vector2( 0, -2 )
+z_as_relative = false
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnergyTransmitter2"]
+position = Vector2( 0, 6 )
+shape = SubResource( 2 )
+
+[node name="EnergyTransmitter3" type="Area2D" parent="."]
+position = Vector2( -2, 0 )
+z_as_relative = false
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnergyTransmitter3"]
+position = Vector2( 6, 0 )
+shape = SubResource( 2 )
