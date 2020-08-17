@@ -23,8 +23,8 @@ func _process(_delta: float) -> void:
 		color = uncharged_color
 
 
-# verifing if the shape is charged
-func _physics_process(_delta: float) -> void:
+# verify if the shape is charged
+func _physics_process(delta: float) -> void:
 	transmitter1_charged = is_receiver_charged(receiver1)
 
 	transmitter2_charged = is_receiver_charged(receiver2)
@@ -36,7 +36,7 @@ func _physics_process(_delta: float) -> void:
 		is_charged = false
 
 
-func is_receiver_charged(receiver: RayCast2D):
+func is_receiver_charged(receiver: RayCast2D) -> bool:
 	if receiver.is_colliding():
 		var shape: Node = receiver.get_collider().get_parent()
 		
@@ -49,30 +49,17 @@ func is_receiver_charged(receiver: RayCast2D):
 	else:
 		return false
 
-
-func call_discharge():
-	discharge(receiver1)
-	discharge(receiver2)
-
-
-func discharge(receiver: RayCast2D):
-	if receiver.is_colliding():
-		var shape: Node = receiver.get_collider().get_parent()
-		
-		if not shape.is_in_group(\"energy_out\"):
-			if shape.is_charged:
-				shape.is_charged = false
-				shape.transmitter1_charged = false
-				shape.transmitter2_charged = false
-				
-				if shape.is_in_group(\"t_shape\"):
-					shape.transmitter3_charged = false
+func reset() -> void:
+	transmitter1_charged = false
+	transmitter2_charged = false
+	is_charged = false
 "
 
 [sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 2, 2 )
 
 [node name="LShape" type="Polygon2D" groups=[
+"connectors",
 "l_shape",
 ]]
 polygon = PoolVector2Array( -2, -8, -2, 2, 8, 2, 8, -2, 2, -2, 2, -8 )

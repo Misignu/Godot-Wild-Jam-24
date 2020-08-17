@@ -2,34 +2,79 @@
 
 [ext_resource path="res://src/Objects/MotherPuzzle/ConnectorsShapes/TShapeConnector.tscn" type="PackedScene" id=1]
 [ext_resource path="res://src/Objects/MotherPuzzle/ConnectorsShapes/LShapeConnector.tscn" type="PackedScene" id=2]
-[ext_resource path="res://src/Objects/MotherPuzzle/InterestPoints/EnergyIn2.tscn" type="PackedScene" id=3]
 [ext_resource path="res://src/Objects/MotherPuzzle/InterestPoints/EnergyOut.tscn" type="PackedScene" id=4]
-[ext_resource path="res://src/Objects/MotherPuzzle/InterestPoints/EnergyIn1.tscn" type="PackedScene" id=5]
-[ext_resource path="res://src/Objects/MotherPuzzle/InterestPoints/EnergyIn3.tscn" type="PackedScene" id=6]
+[ext_resource path="res://src/Objects/MotherPuzzle/InterestPoints/EnergyIn.tscn" type="PackedScene" id=6]
+[ext_resource path="res://src/Objects/MotherPuzzle/ConnectorsShapes/Shapes/LShape.tscn" type="PackedScene" id=7]
+[ext_resource path="res://src/Objects/MotherPuzzle/ConnectorsShapes/Shapes/LineShape.tscn" type="PackedScene" id=8]
 
 [node name="MotherPuzzle" type="Node"]
-
-[node name="Paths" type="Node" parent="."]
-
-[node name="LinePath" type="Polygon2D" parent="Paths"]
-position = Vector2( -274, -108 )
-color = Color( 0.027451, 0.388235, 0.807843, 1 )
-polygon = PoolVector2Array( 440, 220, 440, 204, 444, 204, 444, 220 )
-
-[node name="Path8" type="Polygon2D" parent="Paths"]
-position = Vector2( -274, -108 )
-color = Color( 0.027451, 0.388235, 0.807843, 1 )
-polygon = PoolVector2Array( 450, 194, 466, 194, 466, 198, 450, 198 )
 
 [node name="InterestPoints" type="Node" parent="."]
 
 [node name="EnergyOut" parent="InterestPoints" instance=ExtResource( 4 )]
+position = Vector2( 112, 48 )
 
-[node name="EnergyIn2" parent="InterestPoints" instance=ExtResource( 3 )]
+[node name="EnergyIn1" parent="InterestPoints" instance=ExtResource( 6 )]
+position = Vector2( 112, 112 )
 
-[node name="EnergyIn1" parent="InterestPoints" instance=ExtResource( 5 )]
+[node name="LineShape" parent="InterestPoints/EnergyIn1" instance=ExtResource( 8 )]
+position = Vector2( 8, -8 )
+rotation = 1.5708
+color = Color( 0.027451, 0.388235, 0.807843, 1 )
+uncharged_color = Color( 0.027451, 0.388235, 0.807843, 1 )
+
+[node name="LineShape2" parent="InterestPoints/EnergyIn1" instance=ExtResource( 8 )]
+position = Vector2( 24, -8 )
+rotation = 1.5708
+color = Color( 0.027451, 0.388235, 0.807843, 1 )
+uncharged_color = Color( 0.027451, 0.388235, 0.807843, 1 )
+
+[node name="LShape" parent="InterestPoints/EnergyIn1" instance=ExtResource( 7 )]
+position = Vector2( 7.99997, -24 )
+rotation = 1.5708
+color = Color( 0.027451, 0.388235, 0.807843, 1 )
+uncharged_color = Color( 0.027451, 0.388235, 0.807843, 1 )
+
+[node name="LShape2" parent="InterestPoints/EnergyIn1" instance=ExtResource( 7 )]
+position = Vector2( 24, 8 )
+rotation = -1.5708
+color = Color( 0.027451, 0.388235, 0.807843, 1 )
+uncharged_color = Color( 0.027451, 0.388235, 0.807843, 1 )
+
+[node name="EnergyIn2" parent="InterestPoints" instance=ExtResource( 6 )]
+position = Vector2( 208, 64 )
+rotation = 3.14159
+
+[node name="LineShape" parent="InterestPoints/EnergyIn2" instance=ExtResource( 8 )]
+position = Vector2( 24, 8 )
+color = Color( 0.027451, 0.388235, 0.807843, 1 )
+uncharged_color = Color( 0.027451, 0.388235, 0.807843, 1 )
+
+[node name="LineShape2" parent="InterestPoints/EnergyIn2" instance=ExtResource( 8 )]
+position = Vector2( 40, 8 )
+color = Color( 0.027451, 0.388235, 0.807843, 1 )
+uncharged_color = Color( 0.027451, 0.388235, 0.807843, 1 )
+
+[node name="LineShape3" parent="InterestPoints/EnergyIn2" instance=ExtResource( 8 )]
+position = Vector2( 8, -8 )
+rotation = 1.5708
+color = Color( 0.027451, 0.388235, 0.807843, 1 )
+uncharged_color = Color( 0.027451, 0.388235, 0.807843, 1 )
 
 [node name="EnergyIn3" parent="InterestPoints" instance=ExtResource( 6 )]
+position = Vector2( 192, 128 )
+rotation = -1.5708
+
+[node name="LineShape" parent="InterestPoints/EnergyIn3" instance=ExtResource( 8 )]
+position = Vector2( 8, -8 )
+rotation = -1.5708
+color = Color( 0.027451, 0.388235, 0.807843, 1 )
+uncharged_color = Color( 0.027451, 0.388235, 0.807843, 1 )
+
+[node name="LineShape2" parent="InterestPoints/EnergyIn3" instance=ExtResource( 8 )]
+position = Vector2( 24, 8 )
+color = Color( 0.027451, 0.388235, 0.807843, 1 )
+uncharged_color = Color( 0.027451, 0.388235, 0.807843, 1 )
 
 [node name="Connectors" type="Node" parent="."]
 
@@ -43,7 +88,6 @@ rotation = -3.14159
 
 [node name="TShapeConnector3" parent="Connectors" instance=ExtResource( 1 )]
 position = Vector2( 136, 88 )
-rotation = 1.5708
 
 [node name="TShapeConnector4" parent="Connectors" instance=ExtResource( 1 )]
 position = Vector2( 200, 88 )
@@ -62,3 +106,35 @@ rotation = 3.14159
 [node name="LShapeConnector3" parent="Connectors" instance=ExtResource( 2 )]
 position = Vector2( 152, 56 )
 rotation = 3.14159
+
+[node name="LShape" parent="Connectors" instance=ExtResource( 7 )]
+position = Vector2( 136, 56 )
+rotation = 1.5708
+color = Color( 0.027451, 0.388235, 0.807843, 1 )
+uncharged_color = Color( 0.027451, 0.388235, 0.807843, 1 )
+
+[node name="LineShape" parent="Connectors" instance=ExtResource( 8 )]
+position = Vector2( 184, 88 )
+color = Color( 0.027451, 0.388235, 0.807843, 1 )
+uncharged_color = Color( 0.027451, 0.388235, 0.807843, 1 )
+
+[node name="LineShape2" parent="Connectors" instance=ExtResource( 8 )]
+position = Vector2( 168, 104 )
+rotation = 1.5708
+color = Color( 0.027451, 0.388235, 0.807843, 1 )
+uncharged_color = Color( 0.027451, 0.388235, 0.807843, 1 )
+
+[node name="Button" type="Button" parent="."]
+anchor_left = 0.5
+anchor_top = 0.92
+anchor_right = 0.5
+anchor_bottom = 0.92
+margin_left = -24.0
+margin_top = -20.0
+margin_right = 24.0
+margin_bottom = -35.0
+text = "Test"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+[connection signal="pressed" from="Button" to="InterestPoints/EnergyOut" method="_on_Button_pressed"]

@@ -10,8 +10,6 @@ onready var shape: Polygon2D = $Shape
 
 # animate the rotation of the connector
 func _on_Button_pressed() -> void:
-	shape.call_discharge()
-	
 	if timer.is_stopped():
 		timer.wait_time = 0.5
 		animate = tween.interpolate_property(self, "rotation", rotation, rotation + PI/2, 0.5)
@@ -20,3 +18,8 @@ func _on_Button_pressed() -> void:
 			tween_state = tween.start()
 		
 		timer.start()
+
+# wait for the answer verification
+func wait():
+	timer.wait_time = 0.7
+	timer.start()
