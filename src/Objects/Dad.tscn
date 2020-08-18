@@ -1,0 +1,37 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://src/Objects/Dad.gd" type="Script" id=1]
+[ext_resource path="res://assets/sprites/placeholders/player.png" type="Texture" id=2]
+[ext_resource path="res://src/Objects/Light.tscn" type="PackedScene" id=3]
+[ext_resource path="res://assets/textures/directional_light_3.png" type="Texture" id=4]
+
+[sub_resource type="CapsuleShape2D" id=1]
+radius = 5.15883
+height = 3.05383
+
+[node name="Dad" type="KinematicBody2D"]
+collision_layer = 2
+script = ExtResource( 1 )
+max_velocity = 50.0
+speed = 50.0
+friction = 1.5
+
+[node name="Sprite" type="Sprite" parent="."]
+texture = ExtResource( 2 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 1 )
+
+[node name="RayCast2D" type="RayCast2D" parent="."]
+enabled = true
+cast_to = Vector2( 0, 32 )
+collision_mask = 4
+collide_with_areas = true
+collide_with_bodies = false
+
+[node name="FlashLight" type="Position2D" parent="."]
+
+[node name="Light" parent="FlashLight" instance=ExtResource( 3 )]
+position = Vector2( 0, -6 )
+texture = ExtResource( 4 )
+energy = 2.0
