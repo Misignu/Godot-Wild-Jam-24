@@ -1,0 +1,98 @@
+[gd_scene load_steps=3 format=2]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Polygon2D
+
+var is_charged: bool = false
+var transmitter1_charged: bool = false
+var transmitter2_charged: bool = false
+
+export var charged_color: = Color(0, 0, 241)
+export var discharged_color: = Color(255, 255, 255)
+
+onready var receiver1: RayCast2D = $EnergyReceiver1
+onready var receiver2: RayCast2D = $EnergyReceiver2
+
+
+# charged feedback
+func verify_energy() -> void:
+	if is_charged:
+		color = charged_color
+
+
+# verify if the shape is charged
+func _physics_process(_delta: float) -> void:
+	transmitter1_charged = is_receiver_charged(receiver1)
+
+	transmitter2_charged = is_receiver_charged(receiver2)
+
+	if transmitter1_charged or transmitter2_charged:
+		is_charged = true
+
+	else:
+		is_charged = false
+
+
+func is_receiver_charged(receiver: RayCast2D) -> bool:
+	if receiver.is_colliding():
+		var shape: Node = receiver.get_collider().get_parent()
+		
+		if shape.is_charged:
+			return true
+		
+		else:
+			return false
+		
+	else:
+		return false
+
+func reset() -> void:
+	color = discharged_color
+	transmitter1_charged = false
+	transmitter2_charged = false
+	is_charged = false
+"
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 2, 2 )
+
+[node name="LShape" type="Polygon2D" groups=[
+"l_shape",
+"shapes",
+]]
+polygon = PoolVector2Array( -2, -8, -2, 2, 8, 2, 8, -2, 2, -2, 2, -8 )
+script = SubResource( 1 )
+
+[node name="EnergyTransmitter1" type="Area2D" parent="."]
+position = Vector2( 0, 4 )
+z_as_relative = false
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnergyTransmitter1"]
+position = Vector2( 0, -8 )
+shape = SubResource( 2 )
+
+[node name="EnergyTransmitter2" type="Area2D" parent="."]
+position = Vector2( -4, 0 )
+z_as_relative = false
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnergyTransmitter2"]
+position = Vector2( 7.922, 0 )
+shape = SubResource( 2 )
+
+[node name="EnergyReceiver1" type="RayCast2D" parent="."]
+position = Vector2( 8, 0 )
+rotation = -1.5708
+enabled = true
+cast_to = Vector2( 0, 4 )
+collide_with_areas = true
+collide_with_bodies = false
+
+[node name="EnergyReceiver2" type="RayCast2D" parent="."]
+position = Vector2( 0, -8 )
+rotation = 3.14159
+enabled = true
+cast_to = Vector2( 0, 4 )
+collide_with_areas = true
+collide_with_bodies = false

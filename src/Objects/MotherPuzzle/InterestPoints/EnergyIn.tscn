@@ -1,0 +1,81 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Polygon2D
+
+var is_charged: bool = false
+var receiver1_charged: bool = false
+var receiver2_charged: bool = false
+var half_charged: = Color(\"d0dc00\")
+var full_charged: = Color(\"06c013\")
+var discharged: = Color(\"ffffff\")
+
+onready var receiver1: RayCast2D = $EnergyReceiver1
+onready var receiver2: RayCast2D = $EnergyReceiver2
+
+signal EnergyIn_full_charged(state)
+
+
+# charged feedback
+func verify_energy() -> void:
+	if receiver1_charged and receiver2_charged:
+		color = full_charged
+		emit_signal(\"EnergyIn_full_charged\", true)
+	
+	elif receiver1_charged or receiver2_charged:
+		color = half_charged
+		emit_signal(\"EnergyIn_full_charged\", false)
+	
+	else:
+		emit_signal(\"EnergyIn_full_charged\", false)
+
+
+# verify if the receivers are charged
+func _physics_process(_delta: float) -> void:
+	if receiver1.get_collider().get_parent().is_charged:
+		receiver1_charged = true
+	
+	else:
+		receiver1_charged = false
+	
+	if receiver2.get_collider().get_parent().is_charged:
+		receiver2_charged = true
+	
+	else:
+		receiver2_charged = false
+	
+	if receiver1_charged and receiver2_charged:
+		is_charged = true
+	
+	else:
+		is_charged = false
+
+
+func reset():
+	color = discharged
+	receiver1_charged = false
+	receiver2_charged = false
+	is_charged = false
+"
+
+[node name="EnergyIn" type="Polygon2D" groups=[
+"shapes",
+]]
+polygon = PoolVector2Array( 6, 0, 0, 6, 0, 10, 6, 16, 10, 16, 16, 10, 16, 6, 10, 0 )
+script = SubResource( 1 )
+
+[node name="EnergyReceiver1" type="RayCast2D" parent="."]
+position = Vector2( 8, 0 )
+rotation = 3.14159
+enabled = true
+cast_to = Vector2( 0, 4 )
+collide_with_areas = true
+collide_with_bodies = false
+
+[node name="EnergyReceiver2" type="RayCast2D" parent="."]
+position = Vector2( 16, 8 )
+rotation = -1.5708
+enabled = true
+cast_to = Vector2( 0, 4 )
+collide_with_areas = true
+collide_with_bodies = false

@@ -1,0 +1,51 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://src/Objects/MotherPuzzle/ConnectorsShapes/Shapes/LShape.tscn" type="PackedScene" id=1]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Polygon2D
+
+var is_charged: bool = false
+var is_right_answer: bool = false
+var enabled: = Color(\"06c013\")
+var disabled: = Color(\"ffffff\")
+
+onready var timer: Timer = $Timer
+
+
+func turn_on() -> void:
+	if timer.is_stopped():
+		timer.wait_time = 1
+		is_charged = true
+		color = enabled
+		timer.start()
+
+func reset() -> void:
+	is_charged = false
+	color = disabled
+"
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 2, 2 )
+
+[node name="EnergyOut" type="Polygon2D" groups=[
+"energy_out",
+]]
+polygon = PoolVector2Array( 0, 0, 0, 16, 16, 16, 16, 0 )
+script = SubResource( 1 )
+
+[node name="Transmitter" type="Area2D" parent="."]
+position = Vector2( -3.33333, 0 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Transmitter"]
+position = Vector2( 11.3333, 14 )
+shape = SubResource( 2 )
+
+[node name="Shape" parent="." instance=ExtResource( 1 )]
+position = Vector2( 8, 24 )
+color = Color( 0.027451, 0.388235, 0.807843, 1 )
+discharged_color = Color( 0.027451, 0.388235, 0.807843, 1 )
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.6
+one_shot = true
