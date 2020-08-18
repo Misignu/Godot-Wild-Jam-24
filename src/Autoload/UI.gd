@@ -12,4 +12,6 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func reload() -> void:
-	get_tree().reload_current_scene()
+	
+	if get_tree().reload_current_scene() != OK:
+		push_error("Wouldn't able to reload the current scene.")
