@@ -11,11 +11,16 @@ onready var energy_in_1: Polygon2D = $VBoxContainer/CenterContainer/InterestPoin
 onready var energy_in_2: Polygon2D = $VBoxContainer/CenterContainer/InterestPoints/EnergyIn2
 onready var energy_in_3: Polygon2D = $VBoxContainer/CenterContainer/InterestPoints/EnergyIn3
 
+signal success
+
 
 func _ready() -> void:
-	energy_in_1.connect("EnergyIn_full_charged", self, "on_EnergyIn_full_charged")
-	energy_in_2.connect("EnergyIn_full_charged", self, "on_EnergyIn_full_charged")
-	energy_in_3.connect("EnergyIn_full_charged", self, "on_EnergyIn_full_charged")
+	if energy_in_1.connect("EnergyIn_full_charged", self, "on_EnergyIn_full_charged") != OK:
+		push_error("unable to connect %s to %s." % [self, energy_in_1])
+	if energy_in_2.connect("EnergyIn_full_charged", self, "on_EnergyIn_full_charged") != OK:
+		push_error("unable to connect %s to %s." % [self, energy_in_2])
+	if energy_in_3.connect("EnergyIn_full_charged", self, "on_EnergyIn_full_charged") != OK:
+		push_error("unable to connect %s to %s." % [self, energy_in_3])
 
 
 func _on_Button_pressed() -> void:
@@ -55,6 +60,7 @@ func on_EnergyIn_full_charged(state: bool) -> void:
 func success_message():
 	output.text += "Hacking successful!"
 	timer.set_process(false)
+	emit_signal("success")
 
 
 func error_message():
