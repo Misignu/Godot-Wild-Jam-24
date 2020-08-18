@@ -17,15 +17,15 @@ var strings: = [
 ]
 
 onready var tween: Tween = $Tween
-onready var dialog: Label = $PopupDialog/VBoxContainer/MarginContainer/Text
-onready var popup: PopupDialog= $PopupDialog
+onready var monologue: Label = $PopupDialog/VBoxContainer/MarginContainer/Text
+onready var popup: PopupDialog = $PopupDialog
 
 signal hacking_time
 
 
 func show_pop_up() -> void:
 	popup.popup()
-	start_dialog(strings[string_index])
+	start_monologue(strings[string_index])
 
 
 func _input(_event: InputEvent) -> void:
@@ -35,7 +35,7 @@ func _input(_event: InputEvent) -> void:
 	
 		match string_index:
 			1, 2:
-				start_dialog(strings[string_index])
+				start_monologue(strings[string_index])
 			3:
 				popup.hide()
 				emit_signal(\"hacking_time\")
@@ -43,14 +43,15 @@ func _input(_event: InputEvent) -> void:
 				popup.hide()
 
 
-func start_dialog(text: String) -> void:
-	var end: int = text.length()
+func start_monologue(text: String) -> void:
+	var end: float = text.length()
+	var speed: float = end / 26
 	var _err: bool 
 	
-	dialog.visible_characters = 0
-	dialog.text = text
+	monologue.visible_characters = 0
+	monologue.text = text
 	
-	_err = tween.interpolate_property(dialog, \"visible_characters\", 0, end, 1)
+	_err = tween.interpolate_property(monologue, \"visible_characters\", 0, end, speed)
 	
 	if not tween.is_active():
 		_err = tween.start()
@@ -96,7 +97,7 @@ __meta__ = {
 }
 
 [node name="Label" type="Label" parent="PopupDialog/VBoxContainer"]
-margin_right = 224.0
+margin_right = 290.0
 margin_bottom = 20.0
 size_flags_vertical = 1
 custom_fonts/font = ExtResource( 1 )
@@ -104,7 +105,7 @@ text = "Mother:"
 
 [node name="MarginContainer" type="MarginContainer" parent="PopupDialog/VBoxContainer"]
 margin_top = 20.0
-margin_right = 224.0
+margin_right = 290.0
 margin_bottom = 64.0
 size_flags_vertical = 3
 custom_constants/margin_right = 0
@@ -112,10 +113,12 @@ custom_constants/margin_left = 10
 
 [node name="Text" type="Label" parent="PopupDialog/VBoxContainer/MarginContainer"]
 margin_left = 10.0
-margin_right = 224.0
+margin_right = 290.0
 margin_bottom = 44.0
 size_flags_vertical = 3
 custom_fonts/font = SubResource( 2 )
+text = "It's a UNIX system.
+I know this!"
 
 [node name="Tween" type="Tween" parent="."]
 [connection signal="tween_all_completed" from="Tween" to="." method="_on_Tween_tween_all_completed"]
