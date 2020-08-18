@@ -26,25 +26,17 @@ func _physics_process(_delta: float) -> void:
 
 	transmitter2_charged = is_receiver_charged(receiver2)
 
-	if transmitter1_charged or transmitter2_charged:
-		is_charged = true
-
-	else:
-		is_charged = false
+	is_charged = transmitter1_charged or transmitter2_charged
 
 
 func is_receiver_charged(receiver: RayCast2D) -> bool:
 	if receiver.is_colliding():
 		var shape: Node = receiver.get_collider().get_parent()
-		
-		if shape.is_charged:
-			return true
-		
-		else:
-			return false
-		
+		return shape.is_charged
+	
 	else:
 		return false
+
 
 func reset() -> void:
 	color = discharged_color

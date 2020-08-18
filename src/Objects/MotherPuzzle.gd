@@ -17,19 +17,22 @@ signal success
 func _ready() -> void:
 	if energy_in_1.connect("EnergyIn_full_charged", self, "on_EnergyIn_full_charged") != OK:
 		push_error("unable to connect %s to %s." % [self, energy_in_1])
+	
 	if energy_in_2.connect("EnergyIn_full_charged", self, "on_EnergyIn_full_charged") != OK:
 		push_error("unable to connect %s to %s." % [self, energy_in_2])
+	
 	if energy_in_3.connect("EnergyIn_full_charged", self, "on_EnergyIn_full_charged") != OK:
 		push_error("unable to connect %s to %s." % [self, energy_in_3])
 
 
 func _on_Button_pressed() -> void:
 	button.disabled = true
-	get_tree().call_group("connector_button", "switch_enabled")
-	output.text += "--- Compilation process started ---\n"
 	timer.wait_time = 1
-	get_tree().call_group("energy_out", "turn_on")
 	timer.start()
+	output.text += "--- Compilation process started ---\n"
+	
+	get_tree().call_group("connector_button", "switch_enabled")
+	get_tree().call_group("energy_out", "turn_on")
 
 
 func _on_Timer_timeout() -> void:
@@ -53,13 +56,13 @@ func on_EnergyIn_full_charged(state: bool) -> void:
 	if energy_in_charged.size() == 3:
 		if energy_in_charged[0] and energy_in_charged[1] and energy_in_charged[2]:
 			success_message()
+		
 		else:
 			error_message()
 
 
 func success_message():
 	output.text += "Hacking successful!"
-	timer.set_process(false)
 	emit_signal("success")
 
 
