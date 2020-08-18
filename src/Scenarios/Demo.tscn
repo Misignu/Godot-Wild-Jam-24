@@ -82,6 +82,7 @@ position = Vector2( 64, 64 )
 
 [node name="Enemy" parent="." instance=ExtResource( 7 )]
 position = Vector2( 224, 80 )
+speed = 200.0
 path_finder_path = NodePath("../TileMapPathFinder")
 
 [node name="AcceptDialog" type="AcceptDialog" parent="."]
