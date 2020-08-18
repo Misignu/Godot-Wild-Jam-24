@@ -12,13 +12,7 @@ script/source = "extends Node2D
 
 onready var goals: Node2D = $Goals
 onready var accept_dialog := $AcceptDialog as AcceptDialog
-var ass: bool setget set_ass
 
-func set_ass(value):
-	ass = value
-	ProjectSettings.set_setting(\"gui/theme/custom\", \"res://assets/default_theme.tres\")
-	propagate_call(\"update\")
-	accept_dialog.update()
 
 func _ready() -> void:
 	
