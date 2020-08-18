@@ -2,7 +2,9 @@
 
 [ext_resource path="res://src/Objects/MotherPuzzle/Connector.gd" type="Script" id=1]
 
-[node name="Connector" type="Node2D"]
+[node name="Connector" type="Node2D" groups=[
+"connector_button",
+]]
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_group_": true

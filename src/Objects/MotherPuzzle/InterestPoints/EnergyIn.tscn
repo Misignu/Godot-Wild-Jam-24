@@ -13,17 +13,21 @@ var discharged: = Color(\"ffffff\")
 onready var receiver1: RayCast2D = $EnergyReceiver1
 onready var receiver2: RayCast2D = $EnergyReceiver2
 
+signal EnergyIn_full_charged(state)
+
 
 # charged feedback
-func _process(_delta: float) -> void:
+func verify_energy() -> void:
 	if receiver1_charged and receiver2_charged:
 		color = full_charged
-		
+		emit_signal(\"EnergyIn_full_charged\", true)
+	
 	elif receiver1_charged or receiver2_charged:
 		color = half_charged
-		
+		emit_signal(\"EnergyIn_full_charged\", false)
+	
 	else:
-		color = discharged
+		emit_signal(\"EnergyIn_full_charged\", false)
 
 
 # verify if the receivers are charged
@@ -45,9 +49,18 @@ func _physics_process(_delta: float) -> void:
 	
 	else:
 		is_charged = false
+
+
+func reset():
+	color = discharged
+	receiver1_charged = false
+	receiver2_charged = false
+	is_charged = false
 "
 
-[node name="EnergyIn" type="Polygon2D"]
+[node name="EnergyIn" type="Polygon2D" groups=[
+"shapes",
+]]
 polygon = PoolVector2Array( 6, 0, 0, 6, 0, 10, 6, 16, 10, 16, 16, 10, 16, 6, 10, 0 )
 script = SubResource( 1 )
 

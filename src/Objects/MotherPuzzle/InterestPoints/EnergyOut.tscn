@@ -13,28 +13,16 @@ var disabled: = Color(\"ffffff\")
 onready var timer: Timer = $Timer
 
 
-func _on_Button_pressed() -> void:
-	timer.wait_time = 0.7
-	
+func turn_on() -> void:
 	if timer.is_stopped():
+		timer.wait_time = 1
 		is_charged = true
 		color = enabled
 		timer.start()
-		get_tree().call_group(\"shape_connectors\", \"wait\")
-		verify_answer()
 
-
-func verify_answer():
-	is_right_answer = false
-
-
-func _on_Timer_timeout() -> void:
-	if is_right_answer:
-		pass
-	else:
-		is_charged = false
-		color = disabled
-		get_tree().call_group(\"connectors\", \"reset\")
+func reset() -> void:
+	is_charged = false
+	color = disabled
 "
 
 [sub_resource type="RectangleShape2D" id=2]
@@ -56,9 +44,8 @@ shape = SubResource( 2 )
 [node name="Shape" parent="." instance=ExtResource( 1 )]
 position = Vector2( 8, 24 )
 color = Color( 0.027451, 0.388235, 0.807843, 1 )
-uncharged_color = Color( 0.027451, 0.388235, 0.807843, 1 )
+discharged_color = Color( 0.027451, 0.388235, 0.807843, 1 )
 
 [node name="Timer" type="Timer" parent="."]
 wait_time = 0.6
 one_shot = true
-[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

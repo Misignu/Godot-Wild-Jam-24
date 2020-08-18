@@ -8,23 +8,20 @@ var transmitter1_charged: bool = false
 var transmitter2_charged: bool = false
 
 export var charged_color: = Color(0, 0, 241)
-export var uncharged_color: = Color(255, 255, 255)
+export var discharged_color: = Color(255, 255, 255)
 
 onready var receiver1: RayCast2D = $EnergyReceiver1
 onready var receiver2: RayCast2D = $EnergyReceiver2
 
 
 # charged feedback
-func _process(_delta: float) -> void:
+func verify_energy() -> void:
 	if is_charged:
 		color = charged_color
-	
-	else:
-		color = uncharged_color
 
 
 # verify if the shape is charged
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	transmitter1_charged = is_receiver_charged(receiver1)
 
 	transmitter2_charged = is_receiver_charged(receiver2)
@@ -50,6 +47,7 @@ func is_receiver_charged(receiver: RayCast2D) -> bool:
 		return false
 
 func reset() -> void:
+	color = discharged_color
 	transmitter1_charged = false
 	transmitter2_charged = false
 	is_charged = false
@@ -59,8 +57,8 @@ func reset() -> void:
 extents = Vector2( 2, 2 )
 
 [node name="LShape" type="Polygon2D" groups=[
-"connectors",
 "l_shape",
+"shapes",
 ]]
 polygon = PoolVector2Array( -2, -8, -2, 2, 8, 2, 8, -2, 2, -2, 2, -8 )
 script = SubResource( 1 )

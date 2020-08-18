@@ -5,7 +5,7 @@ var tween_state: bool
 
 onready var tween: Tween = $Tween
 onready var timer: Timer = $Timer
-onready var shape: Polygon2D = $Shape
+onready var button: Button = $Button
 
 
 # animate the rotation of the connector
@@ -19,7 +19,6 @@ func _on_Button_pressed() -> void:
 		
 		timer.start()
 
-# wait for the answer verification
-func wait():
-	timer.wait_time = 0.7
-	timer.start()
+
+func switch_enabled():
+	button.disabled = not button.disabled
