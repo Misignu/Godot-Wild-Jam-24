@@ -65,7 +65,7 @@ func success_message():
 
 func error_message():
 	output.text += "Compilation error!"
-	timer.wait_time = 1
+	timer.wait_time = 1.5
 	timer.start()
 
 
