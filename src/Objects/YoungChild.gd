@@ -1,7 +1,12 @@
 extends KinematicBody2D
 
+enum States {
+	IDLE,
+	MOVING,
+}
 const MOVE_SPEED = .125
 
+var state: int
 var grid_size: int = 16
 var inputs = {
 	"move_up": Vector2.UP,
@@ -19,9 +24,20 @@ func _unhandled_input(event: InputEvent) -> void:
 		
 		if event.is_action_pressed(direction):
 			move(direction)
+			get_tree().set_input_as_handled()
+
+
+func _on_Tween_tween_completed(object: Object, key: NodePath) -> void:
+	
+	if object == self and key == NodePath(":position"):
+		state = States.IDLE
 
 
 func move(key: String) -> void:
+	
+	if state == States.MOVING:
+		return
+	
 	var direction: Vector2 = inputs[key] * grid_size
 	var collider: Node2D
 	
@@ -49,3 +65,6 @@ func _slide(direction: Vector2) -> void:
 		) and tween.start()
 	):
 		push_error("Wouldn't able to interpolate property 'position' at %s." % self)
+	
+	get_tree().call_group("enemies", "step", global_position)
+	state = States.MOVING

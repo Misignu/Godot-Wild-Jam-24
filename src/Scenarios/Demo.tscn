@@ -39,8 +39,7 @@ func _on_Goal_occupation_shifted(was_occupied: bool) -> void:
 
 
 func _on_AcceptDialog_confirmed() -> void:
-	#UI.reload()
-	push_warning(\"TODO: Add UI reload.\") # TODO
+	UI.reload()
 "
 
 [node name="Demo" type="Node2D"]
@@ -60,7 +59,7 @@ tile_data = PoolIntArray( 0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 4, 0, 0, 5, 0, 0, 
 path_finder_path = NodePath("../../TileMapPathFinder")
 
 [node name="Box2" parent="Boxes" instance=ExtResource( 4 )]
-position = Vector2( 112, 64 )
+position = Vector2( 112, 48 )
 path_finder_path = NodePath("../../TileMapPathFinder")
 
 [node name="Goals" type="Node2D" parent="."]

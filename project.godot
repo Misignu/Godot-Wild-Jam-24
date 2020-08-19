@@ -20,7 +20,11 @@ config/icon="res://icon.png"
 
 [autoload]
 
-Ui="*res://src/Autoload/UI.gd"
+UI="*res://src/Autoload/UI.gd"
+
+[debug]
+
+shapes/collision/shape_color=Color( 0.721569, 0.921569, 0.898039, 0.392157 )
 
 [display]
 

@@ -1,22 +1,25 @@
 tool
 extends Sprite
 
+# TODO -> Implementar IA..
 enum States {
 	IDLE,
-	FOLLOW,
+	MOVING,
 }
 const MASS: float = 10.0
 const ARRIVE_DISTANCE: float = .5
+const MOVE_SPEED = .125
+const PATH_TO_POSITION = NodePath(":global_position")
 
 export var speed: float = 200
 export var path_finder_path: NodePath setget set_path_finder_path
 
-var state: int setget set_state
+var state: int
 var target_point: Vector2
-var target_position: Vector2
-var velocity: Vector2
+var target_position: Vector2 setget set_target_position
 var path: PoolVector2Array
 var path_finder: TileMap
+onready var tween := $Tween as Tween
 
 
 func _ready() -> void:
@@ -41,88 +44,66 @@ func _get_configuration_warning() -> String:
 	return warning
 
 
-func _process(delta: float) -> void:
+func _on_Tween_tween_completed(object: Object, key: NodePath) -> void:
 	
-	if state != States.FOLLOW:
+	if not(object == self and key == PATH_TO_POSITION):
 		return
 	
-	if _move_to(target_point, delta):
+	if path:
 		path.remove(0)
-		
-		if len(path) == 0:
-			self.state = States.IDLE
-			
-		else:
-			target_point = path[0]
-
-
-# WATCH
-func _unhandled_input(event: InputEvent) -> void:
+	state = States.IDLE
 	
-	if not event is InputEventMouseButton or (
-			event.button_index != BUTTON_LEFT or not event.pressed
+	# WATCH -> Garante que o ponto de partida não seja considerado.
+	if len(path) > 1:
+		target_point = path[1]
+
+
+func step(location: Vector2) -> void:
+	
+	if target_position != location:
+		self.target_position = location
+	
+	_slide()
+
+
+func _slide(direction: Vector2 = target_point) -> void:
+	
+	if not(
+		tween.interpolate_property(
+				self, PATH_TO_POSITION, global_position, direction, MOVE_SPEED,
+				Tween.TRANS_SINE
+		) and tween.start()
 	):
-		return
+		push_error("Wouldn't able to interpolate property 'global_position' at %s." % self)
 	
-	if Input.is_key_pressed(KEY_SHIFT):
-		global_position = event.position
-		global_position = event.position
-		
-	else:
-		target_position = event.position
-	
-	self.state = States.FOLLOW
-	get_tree().set_input_as_handled()
-	
-
-func move_to(next_position: Vector2) -> bool:
-	return _move_to(next_position, get_process_delta_time())
+	state = States.MOVING
 
 
-func _move_to(next_position: Vector2, delta: float) -> bool:
+func _update_path() -> void:
+	path = path_finder.find_path(global_position, target_position)
 	
-	var desired_velocity: Vector2 = (next_position - position).normalized() * speed
-	var steering: Vector2 = desired_velocity - velocity
-	velocity += steering / MASS
-	position += velocity * delta
-	
-	return position.distance_to(next_position) < ARRIVE_DISTANCE
+	if len(path) > 1:
+		target_point = path[1]
 
 
 func _setup() -> void:
-	
 	path_finder = get_node(path_finder_path)
-	self.state = States.IDLE
 	
-	if path_finder.connect("obstacles_moved", self, "_on_PathFinder_obstacles_moved") != OK:
+	if path_finder.connect("obstacle_moved", self, "_on_PathFinder_obstacle_moved") != OK:
 		push_error("Wouldn't able to connect %s to %s." % [self, path_finder])
 
 
-func _on_PathFinder_obstacles_moved() -> void:
-	print('moved')
-	if state == States.FOLLOW:
-		_set_state_follow()
+# WATCH -> Verificar a passagem do ponto.
+func _on_PathFinder_obstacle_moved(_point: Vector2) -> void:
+	_update_path()
 
 
-func _set_state_follow() -> void:
+func set_target_position(value: Vector2) -> void:
 	
-	path = path_finder.find_path(position, target_position)
-	
-	if not path or len(path) == 1:
-		self.state = States.IDLE
-		
-	else:
-		target_point = path[1]
+	target_position = value
+	_update_path()
 
 
 func set_path_finder_path(value: NodePath) -> void:
 	path_finder_path = value
 	update_configuration_warning()
-
-
-func set_state(new_state: int) -> void:
-	
-	if new_state == States.FOLLOW:
-		_set_state_follow()
-	
-	state = new_state
