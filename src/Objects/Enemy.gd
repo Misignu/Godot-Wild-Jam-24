@@ -6,9 +6,9 @@ const ARRIVE_DISTANCE: float = .5
 const MOVE_SPEED: float = .125
 const PATH_TO_POSITION := NodePath(":global_position")
 
-export var speed: float = 200
 export var path_finder_path: NodePath setget set_path_finder_path
 
+var _are_lights_on: bool setget _on_lights_turned
 var target_point: Vector2
 var target_position: Vector2 setget set_target_position
 var path: PoolVector2Array
@@ -38,6 +38,10 @@ func _get_configuration_warning() -> String:
 		warning = str(warning, "The var [path_finder_path] should point to a node of type Tilemap.")
 	
 	return warning
+
+
+func _on_lights_turned(value: bool) -> void:
+	_are_lights_on = value
 
 
 func _on_Tween_tween_completed(object: Object, key: NodePath) -> void:

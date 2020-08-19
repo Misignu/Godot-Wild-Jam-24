@@ -24,7 +24,7 @@ UI="*res://src/Autoload/UI.gd"
 
 [debug]
 
-shapes/collision/shape_color=Color( 0.721569, 0.921569, 0.898039, 0.392157 )
+shapes/collision/shape_color=Color( 1, 1, 1, 0.392157 )
 
 [display]
 
@@ -94,6 +94,7 @@ move_right={
 
 2d_physics/layer_1="world"
 2d_physics/layer_2="player"
+2d_physics/layer_3="player_light_zone"
 
 [rendering]
 
