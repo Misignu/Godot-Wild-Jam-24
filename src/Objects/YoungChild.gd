@@ -1,5 +1,7 @@
 extends KinematicBody2D
 
+signal player_died
+
 enum States {
 	IDLE,
 	MOVING,
@@ -54,6 +56,11 @@ func move(key: String) -> void:
 		
 	else:
 		_slide(direction)
+
+
+func take_damage() -> void:
+	emit_signal("player_died")
+	queue_free()
 
 
 func _slide(direction: Vector2) -> void:

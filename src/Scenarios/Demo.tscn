@@ -5,7 +5,7 @@
 [ext_resource path="res://src/Objects/YoungChild.tscn" type="PackedScene" id=3]
 [ext_resource path="res://src/Objects/Box.tscn" type="PackedScene" id=4]
 [ext_resource path="res://src/Objects/TileMapPathFinder.tscn" type="PackedScene" id=5]
-[ext_resource path="res://src/Objects/Enemy.tscn" type="PackedScene" id=7]
+[ext_resource path="res://src/Objects/Enemies/Rat.tscn" type="PackedScene" id=6]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Node2D
@@ -40,6 +40,12 @@ func _on_Goal_occupation_shifted(was_occupied: bool) -> void:
 
 func _on_AcceptDialog_confirmed() -> void:
 	UI.reload()
+
+
+func _on_YoungChild_player_died() -> void:
+	accept_dialog.dialog_text = \"Player died!\"
+	accept_dialog.window_title = \"D:\"
+	accept_dialog.popup()
 "
 
 [node name="Demo" type="Node2D"]
@@ -73,7 +79,7 @@ position = Vector2( 160, 80 )
 [node name="YoungChild" parent="." instance=ExtResource( 3 )]
 position = Vector2( 64, 64 )
 
-[node name="Enemy" parent="." instance=ExtResource( 7 )]
+[node name="Rats" parent="." instance=ExtResource( 6 )]
 position = Vector2( 224, 80 )
 path_finder_path = NodePath("../TileMapPathFinder")
 
@@ -88,4 +94,5 @@ dialog_text = "Level cleared!"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+[connection signal="player_died" from="YoungChild" to="." method="_on_YoungChild_player_died"]
 [connection signal="confirmed" from="AcceptDialog" to="." method="_on_AcceptDialog_confirmed"]

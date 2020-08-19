@@ -16,7 +16,9 @@ onready var obstacles: Array = get_used_cells_by_id(OBSTACLES_ID)
 
 func _ready() -> void:
 	var walkable_cells: Array = astar_add_walkable_cells()
-	astar_connect_walkable_cells(walkable_cells)
+	
+	for point in walkable_cells:
+		astar_connect_cell(point.x, point.y)
 
 
 func astar_add_walkable_cells() -> Array:
@@ -35,12 +37,6 @@ func astar_add_walkable_cells() -> Array:
 			astar.add_point(get_point_index(x, y), Vector3(point.x, point.y, 0.0))
 	
 	return points
-
-
-func astar_connect_walkable_cells(points: Array) -> void:
-	
-	for point in points:
-		astar_connect_cell(point.x, point.y)
 
 
 func astar_connect_cell(x: int, y: int) -> void:
@@ -139,22 +135,6 @@ func _update_path() -> void:
 			get_point_index(path_start_position.x as int, path_start_position.y as int),
 			get_point_index(path_end_position.x as int, path_end_position.y as int)
 	)
-	
-	if OS.is_debug_build() and len(path_points) != 0:
-		var line: Line2D
-		var points := PoolVector2Array()
-		
-		if has_node("DebugLine"):
-			line = get_node("DebugLine") as Line2D
-			
-		else:
-			line = (load("res://src/Tools/DebugLine.tscn") as PackedScene).instance() as Line2D
-			add_child(line)
-		
-		for point in path_points:
-			points.append(Vector2(point.x, point.y) * cell_size + cell_size / 2)
-		
-		line.points = points
 
 
 func is_out_of_bounds(point: Vector2) -> bool:

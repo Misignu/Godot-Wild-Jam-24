@@ -1,24 +1,20 @@
 tool
 extends Sprite
 
-# TODO -> Implementar IA..
-enum States {
-	IDLE,
-	MOVING,
-}
 const MASS: float = 10.0
 const ARRIVE_DISTANCE: float = .5
-const MOVE_SPEED = .125
-const PATH_TO_POSITION = NodePath(":global_position")
+const MOVE_SPEED: float = .125
+const PATH_TO_POSITION := NodePath(":global_position")
 
 export var speed: float = 200
 export var path_finder_path: NodePath setget set_path_finder_path
 
-var state: int
 var target_point: Vector2
 var target_position: Vector2 setget set_target_position
 var path: PoolVector2Array
 var path_finder: TileMap
+
+onready var player_detection: Area2D = $Axis/PlayerDetectionArea
 onready var tween := $Tween as Tween
 
 
@@ -51,19 +47,31 @@ func _on_Tween_tween_completed(object: Object, key: NodePath) -> void:
 	
 	if path:
 		path.remove(0)
-	state = States.IDLE
+		_on_path_changed()
 	
-	# WATCH -> Garante que o ponto de partida não seja considerado.
+	#_on_steped() # WATCH
+
+
+func step(_location: Vector2) -> void:
+	pass
+
+
+# WATCH
+#func _on_steped() -> void:
+#	pass 
+
+
+func _on_path_changed() -> void:
+	
 	if len(path) > 1:
 		target_point = path[1]
+		
+	else:
+		_on_target_achieved()
 
 
-func step(location: Vector2) -> void:
-	
-	if target_position != location:
-		self.target_position = location
-	
-	_slide()
+func _on_target_achieved() -> void:
+	pass
 
 
 func _slide(direction: Vector2 = target_point) -> void:
@@ -75,15 +83,11 @@ func _slide(direction: Vector2 = target_point) -> void:
 		) and tween.start()
 	):
 		push_error("Wouldn't able to interpolate property 'global_position' at %s." % self)
-	
-	state = States.MOVING
 
 
 func _update_path() -> void:
 	path = path_finder.find_path(global_position, target_position)
-	
-	if len(path) > 1:
-		target_point = path[1]
+	_on_path_changed()
 
 
 func _setup() -> void:
@@ -99,6 +103,9 @@ func _on_PathFinder_obstacle_moved(_point: Vector2) -> void:
 
 
 func set_target_position(value: Vector2) -> void:
+	
+	if target_position == value:
+		return
 	
 	target_position = value
 	_update_path()

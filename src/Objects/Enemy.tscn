@@ -21,4 +21,6 @@ __meta__ = {
 [node name="PlayerDetectionArea" parent="Axis" instance=ExtResource( 3 )]
 
 [node name="Tween" type="Tween" parent="."]
+[connection signal="body_entered" from="Axis/PlayerDetectionArea" to="Axis/PlayerDetectionArea" method="_on_PlayerDetection_body_entered"]
+[connection signal="body_exited" from="Axis/PlayerDetectionArea" to="Axis/PlayerDetectionArea" method="_on_PlayerDetection_body_exited"]
 [connection signal="tween_completed" from="Tween" to="." method="_on_Tween_tween_completed"]
