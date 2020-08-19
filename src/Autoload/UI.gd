@@ -11,6 +11,25 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_tree().set_input_as_handled()
 
 
+func _unhandled_key_input(event: InputEventKey) -> void:
+	
+	if not event.is_pressed():
+		return
+	
+	match event.scancode:
+		KEY_F11:
+			set_fullscreen()
+			get_tree().set_input_as_handled()
+			
+		KEY_F3:
+			decrease_volume()
+			get_tree().set_input_as_handled()
+			
+		KEY_F4:
+			increase_volume()
+			get_tree().set_input_as_handled()
+
+
 func reload() -> void:
 	
 	if get_tree().reload_current_scene() != OK:

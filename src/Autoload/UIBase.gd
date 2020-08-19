@@ -51,7 +51,6 @@ class Video extends Audio:
 	General Singleton Class Deals with Video
 	"""
 	signal fullscreen_mode_changed
-	var is_light_mode_on: bool
 	
 	
 	func set_fullscreen(mode: bool = !OS.window_fullscreen) -> void:
