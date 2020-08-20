@@ -16,8 +16,9 @@ var inputs = {
 	"move_left": Vector2.LEFT,
 	"move_right": Vector2.RIGHT,
 }
-onready var raycast: = $RayCast2D as RayCast2D
+onready var raycast: = $Axis/RayCast2D as RayCast2D
 onready var tween := $Tween as Tween
+onready var axis := $Axis as Position2D
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -43,7 +44,7 @@ func move(key: String) -> void:
 	var direction: Vector2 = inputs[key] * grid_size
 	var collider: Node2D
 	
-	raycast.cast_to = direction
+	axis.rotation = direction.angle() - PI /2
 	raycast.force_raycast_update()
 	
 	if raycast.is_colliding():

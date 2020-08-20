@@ -23,8 +23,14 @@ func _on_lights_turned(value: bool) -> void:
 
 func _on_target_achieved() -> void:
 	
-	if state == States.RETURN:
-		return
+	match state:
+		
+		States.RETURN:
+			state = States.IDLE
+			continue
+		
+		States.IDLE:
+			return
 	
 	if player_detection.can_see_player():
 		_attack(player_detection.player)
@@ -37,6 +43,7 @@ func _on_target_achieved() -> void:
 
 func _attack(player: Node2D) -> void:
 	player.take_damage()
+	state = States.IDLE
 
 
 func step(location: Vector2) -> void:
@@ -77,28 +84,37 @@ func _follow_path() -> void:
 
 
 func _step_on_dark(location: Vector2) -> void:
+	var started_following: bool
+	
+	raycast.force_raycast_update()
 	
 	if raycast.is_colliding():
-		self.target_position = location
 		state = States.FOLLOW
+		started_following = true
+	
+	match state:
 		
-	else:
+		States.IDLE:
+			return
 		
-		if len(path) > 1:
-			_follow_path()
+		States.FOLLOW:
 			
-		elif state != States.RETURN:
+			if started_following or len(path) > 1:
+				self.target_position = location
+				
+			else:
+				_attack(player_detection.player)
+				state = States.ATTACK
+		
+		States.RETURN:
+			pass
+		
+		_:
 			state = States.RETURN
 			self.target_position = wander_controller.start_position
-			_follow_path()
 	
-	if state == States.FOLLOW:
-		
-		if len(path) > 1:
-			_slide()
-			
-		else:
-			_attack(player_detection.player)
+	if len(path) > 1:
+		_follow_path()
 
 
 func _wander() -> void:

@@ -100,6 +100,7 @@ mode = 2
 
 [node name="AmbientLight" parent="." instance=ExtResource( 8 )]
 visible = false
+_is_on = false
 
 [node name="HUD" type="CanvasLayer" parent="."]
 
