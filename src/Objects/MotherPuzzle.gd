@@ -4,12 +4,12 @@ var energy_in_charged: = []
 var output_index: int = -1
 var output_percentage: = ["25%\n", "75%\n"]
 
-onready var button: Button = $PopupPanel/VBoxContainer/MarginContainer/VBoxContainer2/HBoxContainer/Button
-onready var output: RichTextLabel = $PopupPanel/VBoxContainer/MarginContainer/VBoxContainer2/Panel/MarginContainer/RichTextLabel
+onready var button: Button = $PopupPanel/VBoxContainer/MarginContainer/VBoxContainer2/TextureRect/MarginContainer/HBoxContainer/Button
+onready var output: Label = $PopupPanel/VBoxContainer/MarginContainer/VBoxContainer2/Panel/RichTextLabel
 onready var timer: Timer = $Timer
-onready var energy_in_1: Polygon2D = $PopupPanel/VBoxContainer/CenterContainer/InterestPoints/EnergyIn1
-onready var energy_in_2: Polygon2D = $PopupPanel/VBoxContainer/CenterContainer/InterestPoints/EnergyIn2
-onready var energy_in_3: Polygon2D = $PopupPanel/VBoxContainer/CenterContainer/InterestPoints/EnergyIn3
+onready var energy_in_1: AnimatedSprite = $PopupPanel/VBoxContainer/CenterContainer/InterestPoints/EnergyIn1
+onready var energy_in_2: AnimatedSprite = $PopupPanel/VBoxContainer/CenterContainer/InterestPoints/EnergyIn2
+onready var energy_in_3: AnimatedSprite = $PopupPanel/VBoxContainer/CenterContainer/InterestPoints/EnergyIn3
 onready var pop_up: PopupPanel = $PopupPanel
 
 signal success

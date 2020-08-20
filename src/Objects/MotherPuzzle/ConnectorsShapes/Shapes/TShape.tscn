@@ -1,15 +1,35 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=7 format=2]
 
-[sub_resource type="GDScript" id=1]
-script/source = "extends Polygon2D
+[ext_resource path="res://assets/sprites/ui/connectors.png" type="Texture" id=1]
+
+[sub_resource type="AtlasTexture" id=5]
+atlas = ExtResource( 1 )
+region = Rect2( 32, 64, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=1]
+atlas = ExtResource( 1 )
+region = Rect2( 16, 16, 16, 16 )
+
+[sub_resource type="SpriteFrames" id=2]
+animations = [ {
+"frames": [ SubResource( 5 ) ],
+"loop": true,
+"name": "charged",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 1 ) ],
+"loop": true,
+"name": "discharged",
+"speed": 5.0
+} ]
+
+[sub_resource type="GDScript" id=3]
+script/source = "extends AnimatedSprite
 
 var is_charged: bool = false
 var transmitter1_charged: bool = false
 var transmitter2_charged: bool = false
 var transmitter3_charged: bool = false
-
-export var charged_color: = Color(0, 0, 241)
-export var discharged_color: = Color(255, 255, 255)
 
 onready var receiver1: RayCast2D = $EnergyReceiver1
 onready var receiver2: RayCast2D = $EnergyReceiver2
@@ -19,7 +39,7 @@ onready var receiver3: RayCast2D = $EnergyReceiver3
 # charged feedback
 func verify_energy() -> void:
 	if is_charged:
-		color = charged_color
+		animation = \"charged\"
 
 
 # verifing if the shape is charged
@@ -43,22 +63,23 @@ func is_receiver_charged(receiver: RayCast2D) -> bool:
 
 
 func reset() -> void:
-	color = discharged_color
+	animation = \"discharged\"
 	transmitter1_charged = false
 	transmitter2_charged = false
 	transmitter3_charged = false
 	is_charged = false
 "
 
-[sub_resource type="RectangleShape2D" id=2]
+[sub_resource type="RectangleShape2D" id=4]
 extents = Vector2( 2, 2 )
 
-[node name="TShape" type="Polygon2D" groups=[
+[node name="TShape" type="AnimatedSprite" groups=[
 "shapes",
 "t_shape",
 ]]
-polygon = PoolVector2Array( -2, -8, -2, 8, 2, 8, 2, 2, 8, 2, 8, -2, 2, -2, 2, -8 )
-script = SubResource( 1 )
+frames = SubResource( 2 )
+animation = "discharged"
+script = SubResource( 3 )
 
 [node name="EnergyReceiver1" type="RayCast2D" parent="."]
 position = Vector2( 0, 8 )
@@ -90,7 +111,7 @@ collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="EnergyTransmitter1"]
 position = Vector2( 0, -6 )
-shape = SubResource( 2 )
+shape = SubResource( 4 )
 
 [node name="EnergyTransmitter2" type="Area2D" parent="."]
 position = Vector2( 0, -2 )
@@ -99,7 +120,7 @@ collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="EnergyTransmitter2"]
 position = Vector2( 0, 6 )
-shape = SubResource( 2 )
+shape = SubResource( 4 )
 
 [node name="EnergyTransmitter3" type="Area2D" parent="."]
 position = Vector2( -2, 0 )
@@ -108,4 +129,4 @@ collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="EnergyTransmitter3"]
 position = Vector2( 6, 0 )
-shape = SubResource( 2 )
+shape = SubResource( 4 )

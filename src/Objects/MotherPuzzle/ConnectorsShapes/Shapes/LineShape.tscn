@@ -1,16 +1,111 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=7 format=2]
 
-[ext_resource path="res://src/Objects/MotherPuzzle/ConnectorsShapes/Shapes/LShape.tscn" type="PackedScene" id=1]
+[ext_resource path="res://assets/sprites/ui/connectors.png" type="Texture" id=1]
 
-[node name="LineShape" instance=ExtResource( 1 )]
-polygon = PoolVector2Array( -8, 2, -2, 2, 8, 2, 8, -2, 2, -2, -8, -2 )
+[sub_resource type="AtlasTexture" id=5]
+atlas = ExtResource( 1 )
+region = Rect2( 48, 80, 16, 16 )
 
-[node name="CollisionShape2D" parent="EnergyTransmitter1" index="0"]
+[sub_resource type="AtlasTexture" id=6]
+atlas = ExtResource( 1 )
+region = Rect2( 32, 32, 16, 16 )
+
+[sub_resource type="SpriteFrames" id=2]
+animations = [ {
+"frames": [ SubResource( 5 ) ],
+"loop": true,
+"name": "charged",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 6 ) ],
+"loop": true,
+"name": "discharged",
+"speed": 5.0
+} ]
+
+[sub_resource type="GDScript" id=3]
+script/source = "extends AnimatedSprite
+
+var is_charged: bool = false
+var transmitter1_charged: bool = false
+var transmitter2_charged: bool = false
+
+onready var receiver1: RayCast2D = $EnergyReceiver1
+onready var receiver2: RayCast2D = $EnergyReceiver2
+
+
+# charged feedback
+func verify_energy() -> void:
+	if is_charged:
+		animation = \"charged\"
+
+
+# verify if the shape is charged
+func _physics_process(_delta: float) -> void:
+	transmitter1_charged = is_receiver_charged(receiver1)
+
+	transmitter2_charged = is_receiver_charged(receiver2)
+
+	is_charged = transmitter1_charged or transmitter2_charged
+
+
+func is_receiver_charged(receiver: RayCast2D) -> bool:
+	if receiver.is_colliding():
+		var shape: Node = receiver.get_collider().get_parent()
+		return shape.is_charged
+	
+	else:
+		return false
+
+
+func reset() -> void:
+	animation = \"discharged\"
+	transmitter1_charged = false
+	transmitter2_charged = false
+	is_charged = false
+"
+
+[sub_resource type="RectangleShape2D" id=4]
+extents = Vector2( 2, 2 )
+
+[node name="LineShape" type="AnimatedSprite" groups=[
+"l_shape",
+"shapes",
+]]
+frames = SubResource( 2 )
+animation = "discharged"
+script = SubResource( 3 )
+
+[node name="EnergyTransmitter1" type="Area2D" parent="."]
+position = Vector2( 0, 4 )
+z_as_relative = false
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnergyTransmitter1"]
 position = Vector2( -4, -4 )
+shape = SubResource( 4 )
 
-[node name="CollisionShape2D" parent="EnergyTransmitter2" index="0"]
+[node name="EnergyTransmitter2" type="Area2D" parent="."]
+position = Vector2( -4, 0 )
+z_as_relative = false
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnergyTransmitter2"]
 position = Vector2( 8, 0 )
+shape = SubResource( 4 )
 
-[node name="EnergyReceiver2" parent="." index="3"]
+[node name="EnergyReceiver1" type="RayCast2D" parent="."]
+position = Vector2( 8, 0 )
+rotation = -1.5708
+enabled = true
+cast_to = Vector2( 0, 4 )
+collide_with_areas = true
+collide_with_bodies = false
+
+[node name="EnergyReceiver2" type="RayCast2D" parent="."]
 position = Vector2( -8, 0 )
 rotation = 1.5708
+enabled = true
+cast_to = Vector2( 0, 4 )
+collide_with_areas = true
+collide_with_bodies = false
