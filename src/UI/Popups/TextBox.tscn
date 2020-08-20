@@ -1,8 +1,6 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://assets/fonts/default_font.tres" type="DynamicFont" id=1]
-[ext_resource path="res://assets/fonts/712_serif.ttf" type="DynamicFontData" id=2]
-[ext_resource path="res://assets/sprites/ui/text_panel.png" type="Texture" id=3]
+[ext_resource path="res://src/UI/Popups/TextBoxMother.tscn" type="PackedScene" id=4]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends MarginContainer
@@ -17,11 +15,17 @@ var strings: = [
 	\"Easy peasy!\"
 ]
 
+onready var title: Label = $TextBoxMother/DialogBox/CenterContainer/MarginContainer/Box/Title/Label
+onready var button_guide: Label = $TextBoxMother/DialogBox/CenterContainer/MarginContainer/Box/Pinpoint/ButtonGuide/Label
 onready var tween: Tween = $Tween
-onready var monologue: Label = $PopupDialog/VBoxContainer/MarginContainer/Text
-onready var popup: PopupDialog = $PopupDialog
+onready var monologue: RichTextLabel = $TextBoxMother/DialogBox/CenterContainer/MarginContainer/Box/MarginContainer/DialogLabel
+onready var popup: PopupDialog = $TextBoxMother
 
 signal hacking_time
+
+
+func _ready() -> void:
+	title.text = \"Mother\"
 
 
 func show_pop_up() -> void:
@@ -29,10 +33,10 @@ func show_pop_up() -> void:
 	start_monologue(strings[string_index])
 
 
-func _input(_event: InputEvent) -> void:
+func _unhandled_input(_event: InputEvent) -> void:
 	if Input.is_action_just_pressed(\"ui_accept\") and text_completed:
-		get_tree().set_input_as_handled()
 		text_completed = false
+		button_guide.text = \"-----\"
 		string_index += 1
 	
 		match string_index:
@@ -61,16 +65,12 @@ func start_monologue(text: String) -> void:
 
 func _on_Tween_tween_all_completed() -> void:
 	text_completed = true
+	button_guide.text = \"SPACE\"
 "
-
-[sub_resource type="StyleBoxEmpty" id=2]
-
-[sub_resource type="DynamicFont" id=3]
-font_data = ExtResource( 2 )
 
 [node name="TextBox" type="MarginContainer"]
 anchor_right = 1.0
-margin_bottom = 72.0
+anchor_bottom = 1.0
 custom_constants/margin_right = 48
 custom_constants/margin_top = 4
 custom_constants/margin_left = 48
@@ -80,64 +80,13 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="PopupDialog" type="PopupDialog" parent="."]
-visible = true
+[node name="TextBoxMother" parent="." instance=ExtResource( 4 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
 margin_left = 48.0
 margin_top = 4.0
 margin_right = 272.0
-margin_bottom = 68.0
-rect_min_size = Vector2( 0, 64 )
-custom_styles/panel = SubResource( 2 )
-popup_exclusive = true
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="NinePatchRect" type="NinePatchRect" parent="PopupDialog"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-texture = ExtResource( 3 )
-patch_margin_left = 16
-patch_margin_top = 16
-patch_margin_right = 16
-patch_margin_bottom = 16
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="VBoxContainer" type="VBoxContainer" parent="PopupDialog"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-custom_constants/separation = 0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Label" type="Label" parent="PopupDialog/VBoxContainer"]
-margin_right = 224.0
-margin_bottom = 20.0
-size_flags_vertical = 1
-custom_fonts/font = ExtResource( 1 )
-custom_colors/font_color = Color( 0.847059, 1, 0.839216, 1 )
-text = "Mother:"
-
-[node name="MarginContainer" type="MarginContainer" parent="PopupDialog/VBoxContainer"]
-margin_top = 20.0
-margin_right = 224.0
-margin_bottom = 64.0
-size_flags_vertical = 3
-custom_constants/margin_right = 0
-custom_constants/margin_left = 10
-
-[node name="Text" type="Label" parent="PopupDialog/VBoxContainer/MarginContainer"]
-margin_left = 10.0
-margin_right = 224.0
-margin_bottom = 44.0
-size_flags_vertical = 3
-custom_fonts/font = SubResource( 3 )
-custom_colors/font_color = Color( 0.847059, 1, 0.839216, 1 )
-text = "It's a UNIX system.
-I know this!"
+margin_bottom = 176.0
 
 [node name="Tween" type="Tween" parent="."]
 [connection signal="tween_all_completed" from="Tween" to="." method="_on_Tween_tween_all_completed"]
