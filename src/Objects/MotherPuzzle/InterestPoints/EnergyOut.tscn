@@ -1,14 +1,33 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://src/Objects/MotherPuzzle/ConnectorsShapes/Shapes/LShape.tscn" type="PackedScene" id=1]
+[ext_resource path="res://assets/sprites/ui/connectors.png" type="Texture" id=2]
 
-[sub_resource type="GDScript" id=1]
-script/source = "extends Polygon2D
+[sub_resource type="AtlasTexture" id=10]
+atlas = ExtResource( 2 )
+region = Rect2( 0, 48, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=5]
+atlas = ExtResource( 2 )
+region = Rect2( 0, 0, 16, 16 )
+
+[sub_resource type="SpriteFrames" id=6]
+animations = [ {
+"frames": [ SubResource( 10 ) ],
+"loop": true,
+"name": "charged",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 5 ) ],
+"loop": true,
+"name": "discharged",
+"speed": 5.0
+} ]
+
+[sub_resource type="GDScript" id=3]
+script/source = "extends AnimatedSprite
 
 var is_charged: bool = false
-var is_right_answer: bool = false
-var enabled: = Color(\"06c013\")
-var disabled: = Color(\"ffffff\")
 
 onready var timer: Timer = $Timer
 
@@ -17,34 +36,99 @@ func turn_on() -> void:
 	if timer.is_stopped():
 		timer.wait_time = 1
 		is_charged = true
-		color = enabled
+		animation = \"charged\"
 		timer.start()
 
 func reset() -> void:
 	is_charged = false
-	color = disabled
+	animation = \"discharged\"
 "
 
-[sub_resource type="RectangleShape2D" id=2]
+[sub_resource type="RectangleShape2D" id=4]
 extents = Vector2( 2, 2 )
 
-[node name="EnergyOut" type="Polygon2D" groups=[
+[sub_resource type="AtlasTexture" id=11]
+atlas = ExtResource( 2 )
+region = Rect2( 48, 48, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=7]
+atlas = ExtResource( 2 )
+region = Rect2( 32, 0, 16, 16 )
+
+[sub_resource type="SpriteFrames" id=8]
+animations = [ {
+"frames": [ SubResource( 11 ) ],
+"loop": true,
+"name": "charged",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 7 ) ],
+"loop": true,
+"name": "discharged",
+"speed": 5.0
+} ]
+
+[sub_resource type="GDScript" id=9]
+script/source = "extends AnimatedSprite
+
+var is_charged: bool = false
+var transmitter1_charged: bool = false
+var transmitter2_charged: bool = false
+
+onready var receiver1: RayCast2D = $EnergyReceiver1
+onready var receiver2: RayCast2D = $EnergyReceiver2
+
+
+# charged feedback
+func verify_energy() -> void:
+	if is_charged:
+		animation = \"charged\"
+
+
+# verify if the shape is charged
+func _physics_process(_delta: float) -> void:
+	transmitter1_charged = is_receiver_charged(receiver1)
+
+	transmitter2_charged = is_receiver_charged(receiver2)
+
+	is_charged = transmitter1_charged or transmitter2_charged
+
+
+func is_receiver_charged(receiver: RayCast2D) -> bool:
+	if receiver.is_colliding():
+		var shape: Node = receiver.get_collider().get_parent()
+		return shape.is_charged
+	
+	else:
+		return false
+
+
+func reset() -> void:
+	animation = \"discharged\"
+	transmitter1_charged = false
+	transmitter2_charged = false
+	is_charged = false
+"
+
+[node name="EnergyOut" type="AnimatedSprite" groups=[
 "energy_out",
 ]]
-polygon = PoolVector2Array( 0, 0, 0, 16, 16, 16, 16, 0 )
-script = SubResource( 1 )
+position = Vector2( 8, 8 )
+frames = SubResource( 6 )
+animation = "discharged"
+script = SubResource( 3 )
 
 [node name="Transmitter" type="Area2D" parent="."]
 position = Vector2( -3.33333, 0 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Transmitter"]
-position = Vector2( 11.3333, 14 )
-shape = SubResource( 2 )
+position = Vector2( 7.25533, 16 )
+shape = SubResource( 4 )
 
 [node name="Shape" parent="." instance=ExtResource( 1 )]
-position = Vector2( 8, 24 )
-color = Color( 0.027451, 0.388235, 0.807843, 1 )
-discharged_color = Color( 0.027451, 0.388235, 0.807843, 1 )
+position = Vector2( 0, 16 )
+frames = SubResource( 8 )
+script = SubResource( 9 )
 
 [node name="Timer" type="Timer" parent="."]
 wait_time = 0.6
