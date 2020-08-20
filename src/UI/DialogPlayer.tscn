@@ -1,0 +1,277 @@
+[gd_scene load_steps=19 format=2]
+
+[ext_resource path="res://assets/default_theme.tres" type="Theme" id=1]
+[ext_resource path="res://assets/sprites/gui/text_box.png" type="Texture" id=2]
+[ext_resource path="res://assets/fonts/712_serif.ttf" type="DynamicFontData" id=3]
+[ext_resource path="res://assets/fonts/basis33.ttf" type="DynamicFontData" id=4]
+
+[sub_resource type="Animation" id=8]
+resource_name = "text_typing"
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:percent_visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( -0.5, 0.5 ),
+"update": 0,
+"values": [ 0.0, 1.0 ]
+}
+
+[sub_resource type="DynamicFont" id=2]
+extra_spacing_top = -2
+extra_spacing_bottom = -2
+font_data = ExtResource( 3 )
+
+[sub_resource type="DynamicFont" id=3]
+extra_spacing_top = -2
+extra_spacing_bottom = -5
+font_data = ExtResource( 4 )
+
+[sub_resource type="Animation" id=6]
+resource_name = "glow"
+length = 1.5
+loop = true
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.75, 1.5 ),
+"transitions": PoolRealArray( 1, 2, 0.5 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 1.92, 2, 1.9, 1 ), Color( 1, 1, 1, 1 ) ]
+}
+
+[sub_resource type="Animation" id=7]
+resource_name = "idle"
+
+[sub_resource type="Animation" id=4]
+resource_name = "press_space"
+length = 1.5
+loop = true
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:rect_position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.7, 1.5 ),
+"transitions": PoolRealArray( 2, -2, 0.5 ),
+"update": 0,
+"values": [ Vector2( 170, 60 ), Vector2( 170, 62 ), Vector2( 170, 60 ) ]
+}
+
+[sub_resource type="Animation" id=9]
+resource_name = "idling"
+length = 1.5
+loop = true
+tracks/0/type = "animation"
+tracks/0/path = NodePath("CenterContainer/MarginContainer/Box/Pinpoint/AnimationPlayer")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"clips": PoolStringArray( "press_space" ),
+"times": PoolRealArray( 0 )
+}
+
+[sub_resource type="Animation" id=10]
+resource_name = "text_display"
+tracks/0/type = "animation"
+tracks/0/path = NodePath("CenterContainer/MarginContainer/Box/MarginContainer/DialogLabel/AnimationPlayer")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"clips": PoolStringArray( "text_typing" ),
+"times": PoolRealArray( 0 )
+}
+
+[sub_resource type="AnimationNodeAnimation" id=11]
+animation = "idling"
+
+[sub_resource type="AnimationNodeAnimation" id=12]
+animation = "text_display"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=13]
+switch_mode = 2
+auto_advance = true
+
+[sub_resource type="AnimationNodeStateMachineTransition" id=14]
+switch_mode = 1
+
+[sub_resource type="AnimationNodeStateMachine" id=15]
+states/idling/node = SubResource( 11 )
+states/idling/position = Vector2( 463, 77 )
+states/text_display/node = SubResource( 12 )
+states/text_display/position = Vector2( 257, 77 )
+transitions = [ "text_display", "idling", SubResource( 13 ), "idling", "text_display", SubResource( 14 ) ]
+start_node = "text_display"
+
+[sub_resource type="AnimationNodeStateMachinePlayback" id=16]
+
+[node name="DialogPlayer" type="Node"]
+
+[node name="DialogBox" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CenterContainer" type="CenterContainer" parent="DialogBox"]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -96.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarginContainer" type="MarginContainer" parent="DialogBox/CenterContainer"]
+margin_left = 54.0
+margin_right = 266.0
+margin_bottom = 96.0
+custom_constants/margin_right = 16
+custom_constants/margin_top = 16
+custom_constants/margin_left = 16
+custom_constants/margin_bottom = 16
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Box" type="NinePatchRect" parent="DialogBox/CenterContainer/MarginContainer"]
+margin_left = 16.0
+margin_top = 16.0
+margin_right = 196.0
+margin_bottom = 80.0
+rect_min_size = Vector2( 180, 64 )
+texture = ExtResource( 2 )
+region_rect = Rect2( 0, 0, 8, 8 )
+patch_margin_left = 5
+patch_margin_top = 4
+patch_margin_right = 5
+patch_margin_bottom = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarginContainer" type="MarginContainer" parent="DialogBox/CenterContainer/MarginContainer/Box"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_constants/margin_right = 4
+custom_constants/margin_top = 12
+custom_constants/margin_left = 4
+custom_constants/margin_bottom = 12
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="DialogLabel" type="RichTextLabel" parent="DialogBox/CenterContainer/MarginContainer/Box/MarginContainer"]
+margin_left = 4.0
+margin_top = 12.0
+margin_right = 176.0
+margin_bottom = 52.0
+bbcode_enabled = true
+bbcode_text = "[wave]Omae wa moe shindeiru![/wave]"
+text = "Omae wa moe shindeiru!"
+scroll_active = false
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="DialogBox/CenterContainer/MarginContainer/Box/MarginContainer/DialogLabel"]
+anims/text_typing = SubResource( 8 )
+
+[node name="Title" type="NinePatchRect" parent="DialogBox/CenterContainer/MarginContainer/Box"]
+margin_left = -10.0
+margin_top = -4.0
+margin_right = 44.0
+margin_bottom = 12.0
+rect_min_size = Vector2( 45, 16 )
+texture = ExtResource( 2 )
+patch_margin_left = 3
+patch_margin_top = 3
+patch_margin_right = 3
+patch_margin_bottom = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="DialogBox/CenterContainer/MarginContainer/Box/Title"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_min_size = Vector2( 54, 16 )
+custom_fonts/font = SubResource( 2 )
+text = "lorem"
+align = 1
+clip_text = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="DialogBox/CenterContainer/MarginContainer/Box/Title"]
+
+[node name="Pinpoint" type="Control" parent="DialogBox/CenterContainer/MarginContainer/Box"]
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -10.0
+margin_top = -3.28213
+margin_right = -10.0
+margin_bottom = -3.28213
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ButtonGuide" type="NinePatchRect" parent="DialogBox/CenterContainer/MarginContainer/Box/Pinpoint"]
+margin_left = -27.0
+margin_top = -8.0
+margin_right = 27.0
+margin_bottom = 9.0
+rect_min_size = Vector2( 54, 17 )
+texture = ExtResource( 2 )
+patch_margin_left = 3
+patch_margin_top = 3
+patch_margin_right = 3
+patch_margin_bottom = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="DialogBox/CenterContainer/MarginContainer/Box/Pinpoint/ButtonGuide"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = 3.8147e-06
+rect_min_size = Vector2( 54, 17 )
+custom_fonts/font = SubResource( 3 )
+text = "-----"
+align = 1
+clip_text = true
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="DialogBox/CenterContainer/MarginContainer/Box/Pinpoint"]
+anims/glow = SubResource( 6 )
+anims/idle = SubResource( 7 )
+anims/press_space = SubResource( 4 )
+
+[node name="AnimationController" type="AnimationPlayer" parent="DialogBox"]
+anims/idling = SubResource( 9 )
+anims/text_display = SubResource( 10 )
+
+[node name="AnimationTree" type="AnimationTree" parent="DialogBox"]
+tree_root = SubResource( 15 )
+anim_player = NodePath("../AnimationController")
+active = true
+parameters/playback = SubResource( 16 )
