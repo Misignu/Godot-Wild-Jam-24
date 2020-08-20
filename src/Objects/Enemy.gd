@@ -1,22 +1,21 @@
 tool
 extends Sprite
 
-enum States {
-	IDLE,
-	FOLLOW,
-}
 const MASS: float = 10.0
 const ARRIVE_DISTANCE: float = .5
+const MOVE_SPEED: float = .125
+const PATH_TO_POSITION := NodePath(":global_position")
 
-export var speed: float = 200
 export var path_finder_path: NodePath setget set_path_finder_path
 
-var state: int setget set_state
+var _are_lights_on: bool setget _on_lights_turned
 var target_point: Vector2
-var target_position: Vector2
-var velocity: Vector2
+var target_position: Vector2 setget set_target_position
 var path: PoolVector2Array
 var path_finder: TileMap
+
+onready var player_detection: Area2D = $Axis/PlayerDetectionArea
+onready var tween := $Tween as Tween
 
 
 func _ready() -> void:
@@ -41,88 +40,81 @@ func _get_configuration_warning() -> String:
 	return warning
 
 
-func _process(delta: float) -> void:
+func _on_lights_turned(value: bool) -> void:
+	_are_lights_on = value
+
+
+func _on_Tween_tween_completed(object: Object, key: NodePath) -> void:
 	
-	if state != States.FOLLOW:
+	if not(object == self and key == PATH_TO_POSITION):
 		return
 	
-	if _move_to(target_point, delta):
+	if path:
 		path.remove(0)
-		
-		if len(path) == 0:
-			self.state = States.IDLE
-			
-		else:
-			target_point = path[0]
+		_on_path_changed()
+	
+	#_on_steped() # WATCH
+
+
+func step(_location: Vector2) -> void:
+	pass
 
 
 # WATCH
-func _unhandled_input(event: InputEvent) -> void:
+#func _on_steped() -> void:
+#	pass 
+
+
+func _on_path_changed() -> void:
 	
-	if not event is InputEventMouseButton or (
-			event.button_index != BUTTON_LEFT or not event.pressed
-	):
-		return
-	
-	if Input.is_key_pressed(KEY_SHIFT):
-		global_position = event.position
-		global_position = event.position
+	if len(path) > 1:
+		target_point = path[1]
 		
 	else:
-		target_position = event.position
-	
-	self.state = States.FOLLOW
-	get_tree().set_input_as_handled()
-	
-
-func move_to(next_position: Vector2) -> bool:
-	return _move_to(next_position, get_process_delta_time())
+		_on_target_achieved()
 
 
-func _move_to(next_position: Vector2, delta: float) -> bool:
+func _on_target_achieved() -> void:
+	pass
+
+
+func _slide(direction: Vector2 = target_point) -> void:
 	
-	var desired_velocity: Vector2 = (next_position - position).normalized() * speed
-	var steering: Vector2 = desired_velocity - velocity
-	velocity += steering / MASS
-	position += velocity * delta
-	
-	return position.distance_to(next_position) < ARRIVE_DISTANCE
+	if not(
+		tween.interpolate_property(
+				self, PATH_TO_POSITION, global_position, direction, MOVE_SPEED,
+				Tween.TRANS_SINE
+		) and tween.start()
+	):
+		push_error("Wouldn't able to interpolate property 'global_position' at %s." % self)
+
+
+func _update_path() -> void:
+	path = path_finder.find_path(global_position, target_position)
+	_on_path_changed()
 
 
 func _setup() -> void:
-	
 	path_finder = get_node(path_finder_path)
-	self.state = States.IDLE
 	
-	if path_finder.connect("obstacles_moved", self, "_on_PathFinder_obstacles_moved") != OK:
+	if path_finder.connect("obstacle_moved", self, "_on_PathFinder_obstacle_moved") != OK:
 		push_error("Wouldn't able to connect %s to %s." % [self, path_finder])
 
 
-func _on_PathFinder_obstacles_moved() -> void:
-	print('moved')
-	if state == States.FOLLOW:
-		_set_state_follow()
+# WATCH -> Verificar a passagem do ponto.
+func _on_PathFinder_obstacle_moved(_point: Vector2) -> void:
+	_update_path()
 
 
-func _set_state_follow() -> void:
+func set_target_position(value: Vector2) -> void:
 	
-	path = path_finder.find_path(position, target_position)
+	if target_position == value:
+		return
 	
-	if not path or len(path) == 1:
-		self.state = States.IDLE
-		
-	else:
-		target_point = path[1]
+	target_position = value
+	_update_path()
 
 
 func set_path_finder_path(value: NodePath) -> void:
 	path_finder_path = value
 	update_configuration_warning()
-
-
-func set_state(new_state: int) -> void:
-	
-	if new_state == States.FOLLOW:
-		_set_state_follow()
-	
-	state = new_state

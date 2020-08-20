@@ -5,6 +5,7 @@ signal sliding_started
 signal sliding_finished
 
 const MOVE_SPEED: float = .125
+const PATH_TO_POSITION = NodePath(":global_position")
 
 export var path_finder_path: NodePath setget set_path_finder_path
 var state: int
@@ -42,8 +43,11 @@ func _get_configuration_warning() -> String:
 	return warning
 
 
-func _on_Tween_tween_all_completed() -> void:
-	path_finder.remove_obstacle(last_position)
+func _on_Tween_tween_completed(object: Object, key: NodePath) -> void:
+	
+	if not(object == self and key == PATH_TO_POSITION):
+		return
+	
 	emit_signal("sliding_finished")
 
 
@@ -66,13 +70,14 @@ func _slide(direction: Vector2) -> void:
 	
 	if not(
 		tween.interpolate_property(
-				self, "global_position", global_position, target_position, MOVE_SPEED,
+				self, PATH_TO_POSITION, global_position, target_position, MOVE_SPEED,
 				Tween.TRANS_SINE
 		) and tween.start()
 	):
-		push_error("Wouldn't able to interpolate property 'global_position' at %s." % self)
+		push_error("Wouldn't able to interpolate property %s at %s." % [PATH_TO_POSITION, self])
 	
 	last_position = global_position
+	path_finder.remove_obstacle(global_position)
 	path_finder.add_obstacle(target_position)
 	emit_signal("sliding_started")
 

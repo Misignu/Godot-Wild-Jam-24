@@ -20,12 +20,17 @@ config/icon="res://icon.png"
 
 [autoload]
 
-Ui="*res://src/Autoload/UI.gd"
+UI="*res://src/Autoload/UI.gd"
+
+[debug]
+
+shapes/collision/shape_color=Color( 0.647059, 1, 1, 0.392157 )
 
 [display]
 
 window/size/width=320
 window/size/height=180
+window/size/resizable=false
 window/size/test_width=1280
 window/size/test_height=720
 window/stretch/mode="2d"
@@ -90,7 +95,9 @@ move_right={
 
 2d_physics/layer_1="world"
 2d_physics/layer_2="player"
+2d_physics/layer_3="player_light_zone"
 
 [rendering]
 
+quality/2d/use_pixel_snap=true
 environment/default_environment="res://default_env.tres"

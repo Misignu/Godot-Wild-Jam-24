@@ -1,7 +1,14 @@
 extends KinematicBody2D
 
+signal player_died
+
+enum States {
+	IDLE,
+	MOVING,
+}
 const MOVE_SPEED = .125
 
+var state: int
 var grid_size: int = 16
 var inputs = {
 	"move_up": Vector2.UP,
@@ -9,8 +16,9 @@ var inputs = {
 	"move_left": Vector2.LEFT,
 	"move_right": Vector2.RIGHT,
 }
-onready var raycast: = $RayCast2D as RayCast2D
+onready var raycast: = $Axis/RayCast2D as RayCast2D
 onready var tween := $Tween as Tween
+onready var axis := $Axis as Position2D
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -19,13 +27,24 @@ func _unhandled_input(event: InputEvent) -> void:
 		
 		if event.is_action_pressed(direction):
 			move(direction)
+			get_tree().set_input_as_handled()
+
+
+func _on_Tween_tween_completed(object: Object, key: NodePath) -> void:
+	
+	if object == self and key == NodePath(":position"):
+		state = States.IDLE
 
 
 func move(key: String) -> void:
+	
+	if state == States.MOVING:
+		return
+	
 	var direction: Vector2 = inputs[key] * grid_size
 	var collider: Node2D
 	
-	raycast.cast_to = direction
+	axis.rotation = direction.angle() - PI /2
 	raycast.force_raycast_update()
 	
 	if raycast.is_colliding():
@@ -40,6 +59,11 @@ func move(key: String) -> void:
 		_slide(direction)
 
 
+func take_damage() -> void:
+	emit_signal("player_died")
+	queue_free()
+
+
 func _slide(direction: Vector2) -> void:
 	
 	if not(
@@ -49,3 +73,6 @@ func _slide(direction: Vector2) -> void:
 		) and tween.start()
 	):
 		push_error("Wouldn't able to interpolate property 'position' at %s." % self)
+	
+	get_tree().call_group("enemies", "step", global_position)
+	state = States.MOVING
