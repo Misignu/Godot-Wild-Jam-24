@@ -1,7 +1,7 @@
-"""
-General-Purpose Script that Pack some Classes that deals with some UI behaviors
-"""
+# Singleton de propósito geral que lida com comportamentos de UI
 extends "res://src/Autoload/UIBase.gd".Video
+
+signal game_paused
 
 
 func _ready() -> void:
@@ -21,6 +21,9 @@ func _unhandled_key_input(event: InputEventKey) -> void:
 		return
 	
 	match event.scancode:
+		KEY_ESCAPE:
+			set_paused()
+		
 		KEY_F11:
 			set_fullscreen()
 			get_tree().set_input_as_handled()
@@ -38,6 +41,13 @@ func reload() -> void:
 	
 	if get_tree().reload_current_scene() != OK:
 		push_error("Wouldn't able to reload the current scene.")
+
+
+func set_paused(paused: bool = true) -> void:
+	get_tree().paused = paused
+	
+	if paused:
+		emit_signal("game_paused")
 
 
 func get_tool(tool_name: String, target_node: Node = self) -> Node:

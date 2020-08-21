@@ -1,9 +1,8 @@
 class Audio extends Node:
-	"""
-	General Singleton Class that deals with Audio.
-	"""
-	signal volume_changed
-	signal mute_toggled
+		# Classe de propósito geral que lida com gerenciamento do áudio.
+	
+	signal volume_changed(channel_id, volume)
+	signal mute_toggled(channel_id, is_muted)
 	
 	const VOLUME_STEP = 0.1
 	
@@ -47,9 +46,7 @@ class Audio extends Node:
 
 
 class Video extends Audio:
-	"""
-	General Singleton Class Deals with Video
-	"""
+	# Classe de propósito geral que lida com gerenciamento do vídeo.
 	signal fullscreen_mode_changed
 	
 	

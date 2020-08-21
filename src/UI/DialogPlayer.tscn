@@ -5,7 +5,8 @@
 [ext_resource path="res://assets/fonts/712_serif.ttf" type="DynamicFontData" id=3]
 [ext_resource path="res://assets/fonts/basis33.ttf" type="DynamicFontData" id=4]
 
-[sub_resource type="Animation" id=8]
+
+[sub_resource type="Animation" id=1]
 resource_name = "text_typing"
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:percent_visible")
@@ -30,7 +31,7 @@ extra_spacing_top = -2
 extra_spacing_bottom = -5
 font_data = ExtResource( 4 )
 
-[sub_resource type="Animation" id=6]
+[sub_resource type="Animation" id=4]
 resource_name = "glow"
 length = 1.5
 loop = true
@@ -48,11 +49,10 @@ tracks/0/keys = {
 "values": [ Color( 1, 1, 1, 1 ), Color( 1.92, 2, 1.9, 1 ), Color( 1, 1, 1, 1 ) ]
 }
 
-[sub_resource type="Animation" id=7]
+[sub_resource type="Animation" id=5]
 resource_name = "idle"
 
-[sub_resource type="Animation" id=4]
-resource_name = "press_space"
+[sub_resource type="Animation" id=6]
 length = 1.5
 loop = true
 step = 0.05
@@ -69,7 +69,7 @@ tracks/0/keys = {
 "values": [ Vector2( 170, 60 ), Vector2( 170, 62 ), Vector2( 170, 60 ) ]
 }
 
-[sub_resource type="Animation" id=9]
+[sub_resource type="Animation" id=7]
 resource_name = "idling"
 length = 1.5
 loop = true
@@ -83,8 +83,20 @@ tracks/0/keys = {
 "clips": PoolStringArray( "press_space" ),
 "times": PoolRealArray( 0 )
 }
+tracks/1/type = "value"
+tracks/1/path = NodePath("CenterContainer/MarginContainer/Box/Pinpoint/ButtonGuide/Label:text")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ "space" ]
+}
 
-[sub_resource type="Animation" id=10]
+[sub_resource type="Animation" id=8]
 resource_name = "text_display"
 tracks/0/type = "animation"
 tracks/0/path = NodePath("CenterContainer/MarginContainer/Box/MarginContainer/DialogLabel/AnimationPlayer")
@@ -96,29 +108,41 @@ tracks/0/keys = {
 "clips": PoolStringArray( "text_typing" ),
 "times": PoolRealArray( 0 )
 }
+tracks/1/type = "value"
+tracks/1/path = NodePath("CenterContainer/MarginContainer/Box/Pinpoint/ButtonGuide/Label:text")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ "-----" ]
+}
 
-[sub_resource type="AnimationNodeAnimation" id=11]
+[sub_resource type="AnimationNodeAnimation" id=9]
 animation = "idling"
 
-[sub_resource type="AnimationNodeAnimation" id=12]
+[sub_resource type="AnimationNodeAnimation" id=10]
 animation = "text_display"
 
-[sub_resource type="AnimationNodeStateMachineTransition" id=13]
+[sub_resource type="AnimationNodeStateMachineTransition" id=11]
 switch_mode = 2
 auto_advance = true
 
-[sub_resource type="AnimationNodeStateMachineTransition" id=14]
+[sub_resource type="AnimationNodeStateMachineTransition" id=12]
 switch_mode = 1
 
-[sub_resource type="AnimationNodeStateMachine" id=15]
-states/idling/node = SubResource( 11 )
+[sub_resource type="AnimationNodeStateMachine" id=13]
+states/idling/node = SubResource( 9 )
 states/idling/position = Vector2( 463, 77 )
-states/text_display/node = SubResource( 12 )
+states/text_display/node = SubResource( 10 )
 states/text_display/position = Vector2( 257, 77 )
-transitions = [ "text_display", "idling", SubResource( 13 ), "idling", "text_display", SubResource( 14 ) ]
+transitions = [ "text_display", "idling", SubResource( 11 ), "idling", "text_display", SubResource( 12 ) ]
 start_node = "text_display"
 
-[sub_resource type="AnimationNodeStateMachinePlayback" id=16]
+[sub_resource type="AnimationNodeStateMachinePlayback" id=14]
 
 [node name="DialogPlayer" type="Node"]
 
@@ -189,7 +213,7 @@ text = "Omae wa moe shindeiru!"
 scroll_active = false
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="DialogBox/CenterContainer/MarginContainer/Box/MarginContainer/DialogLabel"]
-anims/text_typing = SubResource( 8 )
+anims/text_typing = SubResource( 1 )
 
 [node name="Title" type="NinePatchRect" parent="DialogBox/CenterContainer/MarginContainer/Box"]
 margin_left = -10.0
@@ -226,9 +250,9 @@ anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = -10.0
-margin_top = -3.28213
+margin_top = -2.31242
 margin_right = -10.0
-margin_bottom = -3.28213
+margin_bottom = -2.31242
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -254,7 +278,7 @@ anchor_bottom = 1.0
 margin_right = 3.8147e-06
 rect_min_size = Vector2( 54, 17 )
 custom_fonts/font = SubResource( 3 )
-text = "-----"
+text = "space"
 align = 1
 clip_text = true
 __meta__ = {
@@ -262,16 +286,16 @@ __meta__ = {
 }
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="DialogBox/CenterContainer/MarginContainer/Box/Pinpoint"]
-anims/glow = SubResource( 6 )
-anims/idle = SubResource( 7 )
-anims/press_space = SubResource( 4 )
+anims/glow = SubResource( 4 )
+anims/idle = SubResource( 5 )
+anims/press_space = SubResource( 6 )
 
 [node name="AnimationController" type="AnimationPlayer" parent="DialogBox"]
-anims/idling = SubResource( 9 )
-anims/text_display = SubResource( 10 )
+anims/idling = SubResource( 7 )
+anims/text_display = SubResource( 8 )
 
 [node name="AnimationTree" type="AnimationTree" parent="DialogBox"]
-tree_root = SubResource( 15 )
+tree_root = SubResource( 13 )
 anim_player = NodePath("../AnimationController")
 active = true
-parameters/playback = SubResource( 16 )
+parameters/playback = SubResource( 14 )

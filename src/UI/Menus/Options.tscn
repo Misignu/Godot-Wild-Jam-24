@@ -1,0 +1,144 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://assets/default_theme.tres" type="Theme" id=1]
+[ext_resource path="res://src/UI/Menus/Options.gd" type="Script" id=2]
+[ext_resource path="res://src/UI/Components/SoundControl.tscn" type="PackedScene" id=3]
+
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends CheckBox
+
+
+func _ready() -> void:
+	grab_focus()
+	pressed = OS.window_fullscreen
+	
+	if UI.connect(\"fullscreen_mode_changed\", self, \"_on_UI_fullScreen_mode_changed\") != OK:
+		push_error(\"Woldn't able to connect %s to %s.\" % [UI, self])
+
+
+func _on_UI_fullScreen_mode_changed() -> void:
+	pressed = OS.window_fullscreen
+
+
+func _on_FullScreen_toggled(button_pressed: bool) -> void:
+	UI.set_fullscreen(button_pressed)
+
+
+func _on_FullScreen_focus_entered() -> void:
+	pass # Replace with function body.
+"
+
+[node name="Options" type="WindowDialog"]
+self_modulate = Color( 1, 1, 1, 0.705882 )
+anchor_right = 0.75
+anchor_bottom = 0.622
+margin_right = 0.00038147
+margin_bottom = 0.0400009
+rect_min_size = Vector2( 240, 112 )
+theme = ExtResource( 1 )
+window_title = "OPTIONS"
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+margin_right = 240.0
+margin_bottom = 112.0
+rect_min_size = Vector2( 240, 112 )
+custom_constants/margin_right = 2
+custom_constants/margin_top = 2
+custom_constants/margin_left = 2
+custom_constants/margin_bottom = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer"]
+margin_left = 2.0
+margin_top = 2.0
+margin_right = 238.0
+margin_bottom = 110.0
+follow_focus = true
+scroll_horizontal_enabled = false
+
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/ScrollContainer"]
+margin_right = 201.0
+margin_bottom = 100.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="FullScreen" type="CheckBox" parent="MarginContainer/ScrollContainer/GridContainer"]
+margin_right = 112.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 97, 24 )
+hint_tooltip = "Press F11 to Toggle Fullscreen"
+focus_neighbour_top = NodePath("../SFXS")
+focus_neighbour_bottom = NodePath("../Volume/HBoxContainer/VolumeSlider")
+focus_mode = 1
+size_flags_horizontal = 0
+size_flags_vertical = 0
+enabled_focus_mode = 1
+text = "FULLSCREEN"
+flat = true
+script = SubResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Volume" parent="MarginContainer/ScrollContainer/GridContainer" instance=ExtResource( 3 )]
+margin_top = 28.0
+margin_bottom = 62.0
+custom_constants/margin_right = 1
+custom_constants/margin_top = 1
+custom_constants/margin_left = 1
+custom_constants/margin_bottom = 1
+
+[node name="HBoxContainer" parent="MarginContainer/ScrollContainer/GridContainer/Volume" index="0"]
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 200.0
+margin_bottom = 33.0
+
+[node name="Mute" parent="MarginContainer/ScrollContainer/GridContainer/Volume/HBoxContainer" index="0"]
+margin_right = 99.0
+margin_bottom = 32.0
+
+[node name="VolumeSlider" parent="MarginContainer/ScrollContainer/GridContainer/Volume/HBoxContainer" index="1"]
+margin_left = 99.0
+margin_right = 199.0
+margin_bottom = 32.0
+hint_tooltip = "Press F3 & F4 to change volume"
+
+[node name="SFXS" parent="MarginContainer/ScrollContainer/GridContainer" instance=ExtResource( 3 )]
+margin_top = 66.0
+margin_bottom = 100.0
+custom_constants/margin_right = 1
+custom_constants/margin_top = 1
+custom_constants/margin_left = 1
+custom_constants/margin_bottom = 1
+channel = 1
+
+[node name="HBoxContainer" parent="MarginContainer/ScrollContainer/GridContainer/SFXS" index="0"]
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 200.0
+margin_bottom = 33.0
+
+[node name="Mute" parent="MarginContainer/ScrollContainer/GridContainer/SFXS/HBoxContainer" index="0"]
+margin_right = 99.0
+margin_bottom = 32.0
+text = "SFXs"
+
+[node name="VolumeSlider" parent="MarginContainer/ScrollContainer/GridContainer/SFXS/HBoxContainer" index="1"]
+margin_left = 99.0
+margin_right = 199.0
+margin_bottom = 32.0
+[connection signal="focus_entered" from="MarginContainer/ScrollContainer/GridContainer/FullScreen" to="MarginContainer/ScrollContainer/GridContainer/FullScreen" method="_on_FullScreen_focus_entered"]
+[connection signal="toggled" from="MarginContainer/ScrollContainer/GridContainer/FullScreen" to="MarginContainer/ScrollContainer/GridContainer/FullScreen" method="_on_FullScreen_toggled"]
+
+[editable path="MarginContainer/ScrollContainer/GridContainer/Volume"]
+
+[editable path="MarginContainer/ScrollContainer/GridContainer/SFXS"]

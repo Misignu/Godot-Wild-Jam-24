@@ -1,0 +1,50 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://src/UI/Components/SoundControl.gd" type="Script" id=1]
+
+[node name="SoundControl" type="MarginContainer"]
+margin_right = 201.0
+margin_bottom = 34.0
+rect_min_size = Vector2( 201, 34 )
+size_flags_horizontal = 3
+custom_constants/margin_right = 2
+custom_constants/margin_top = 2
+custom_constants/margin_left = 2
+custom_constants/margin_bottom = 2
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+margin_left = 2.0
+margin_top = 2.0
+margin_right = 199.0
+margin_bottom = 32.0
+rect_min_size = Vector2( 197, 30 )
+custom_constants/separation = 0
+
+[node name="Mute" type="CheckBox" parent="HBoxContainer"]
+margin_right = 98.0
+margin_bottom = 30.0
+focus_neighbour_right = NodePath("../MarginContainer/HSlider")
+focus_next = NodePath("../MarginContainer/HSlider")
+size_flags_horizontal = 3
+size_flags_vertical = 3
+pressed = true
+text = "Master"
+
+[node name="VolumeSlider" type="HSlider" parent="HBoxContainer"]
+margin_left = 98.0
+margin_right = 197.0
+margin_bottom = 30.0
+rect_min_size = Vector2( 63, 0 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+min_value = 0.0001
+max_value = 1.0
+step = 0.1
+value = 1.0
+ticks_on_borders = true
+[connection signal="toggled" from="HBoxContainer/Mute" to="." method="_on_Mute_toggled"]
+[connection signal="value_changed" from="HBoxContainer/VolumeSlider" to="." method="_on_VolumeSlider_value_changed"]
