@@ -1,0 +1,92 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://src/UI/Popups/TextBoxMother.tscn" type="PackedScene" id=4]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends MarginContainer
+
+var string_index: int = 0
+var text_completed: bool = false
+
+var strings: = [
+	\"Let's see what we have...\",
+	\"It's a UNIX system. \\nI know this!\",
+	\"Hacking time!\",
+	\"Easy peasy!\"
+]
+
+onready var title: Label = $TextBoxMother/DialogBox/CenterContainer/MarginContainer/Box/Title/Label
+onready var button_guide: Label = $TextBoxMother/DialogBox/CenterContainer/MarginContainer/Box/Pinpoint/ButtonGuide/Label
+onready var tween: Tween = $Tween
+onready var monologue: RichTextLabel = $TextBoxMother/DialogBox/CenterContainer/MarginContainer/Box/MarginContainer/DialogLabel
+onready var popup: PopupDialog = $TextBoxMother
+
+signal hacking_time
+
+
+func _ready() -> void:
+	title.text = \"Mother\"
+
+
+func show_pop_up() -> void:
+	popup.popup()
+	start_monologue(strings[string_index])
+
+
+func _unhandled_input(_event: InputEvent) -> void:
+	if Input.is_action_just_pressed(\"ui_accept\") and text_completed:
+		text_completed = false
+		button_guide.text = \"-----\"
+		string_index += 1
+	
+		match string_index:
+			1, 2:
+				start_monologue(strings[string_index])
+			3:
+				popup.hide()
+				emit_signal(\"hacking_time\")
+			4:
+				popup.hide()
+
+
+func start_monologue(text: String) -> void:
+	var end: float = text.length()
+	var speed: float = end / 26
+	var _err: bool 
+	
+	monologue.visible_characters = 0
+	monologue.text = text
+	
+	_err = tween.interpolate_property(monologue, \"visible_characters\", 0, end, speed)
+	
+	if not tween.is_active():
+		_err = tween.start()
+
+
+func _on_Tween_tween_all_completed() -> void:
+	text_completed = true
+	button_guide.text = \"SPACE\"
+"
+
+[node name="TextBox" type="MarginContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_constants/margin_right = 48
+custom_constants/margin_top = 4
+custom_constants/margin_left = 48
+custom_constants/margin_bottom = 4
+script = SubResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TextBoxMother" parent="." instance=ExtResource( 4 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 48.0
+margin_top = 4.0
+margin_right = 272.0
+margin_bottom = 176.0
+
+[node name="Tween" type="Tween" parent="."]
+[connection signal="tween_all_completed" from="Tween" to="." method="_on_Tween_tween_all_completed"]
