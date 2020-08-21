@@ -28,9 +28,17 @@ __meta__ = {
 
 [node name="SpotLight" parent="Axis" instance=ExtResource( 3 )]
 position = Vector2( 0, 16 )
+energy = 1.5
 
-[node name="LightZone" parent="Axis/SpotLight" index="0"]
+[node name="Polygon2D" parent="Axis/SpotLight" index="0"]
+visible = false
+
+[node name="LightZone" parent="Axis/SpotLight" index="1"]
 collision_layer = 4
+
+[node name="CollisionShape2D" parent="Axis/SpotLight/LightZone" index="0"]
+self_modulate = Color( 1, 1, 1, 0.47451 )
+position = Vector2( 2.03848e-05, -8 )
 
 [node name="RayCast2D" type="RayCast2D" parent="Axis"]
 cast_to = Vector2( 0, 16 )

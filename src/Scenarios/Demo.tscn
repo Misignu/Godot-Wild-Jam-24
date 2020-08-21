@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://assets/default_theme.tres" type="Theme" id=1]
 [ext_resource path="res://src/Objects/Goal.tscn" type="PackedScene" id=2]
@@ -11,6 +11,7 @@
 [ext_resource path="res://src/Objects/LaserBeam.tscn" type="PackedScene" id=9]
 [ext_resource path="res://src/UI/DialogPlayer.tscn" type="PackedScene" id=10]
 [ext_resource path="res://src/UI/PauseOverlay.tscn" type="PackedScene" id=11]
+[ext_resource path="res://src/Objects/Light.tscn" type="PackedScene" id=12]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Node2D
@@ -68,6 +69,10 @@ __meta__ = {
 "_edit_lock_": true
 }
 
+[node name="Polygon2D" type="Polygon2D" parent="."]
+color = Color( 0.0901961, 0.0352941, 0.121569, 1 )
+polygon = PoolVector2Array( 0, 0, 320, 0, 320, 192, 0, 192 )
+
 [node name="Limits" type="StaticBody2D" parent="."]
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Limits"]
@@ -94,19 +99,27 @@ position = Vector2( 160, 64 )
 position = Vector2( 160, 80 )
 
 [node name="YoungChild" parent="." instance=ExtResource( 3 )]
-position = Vector2( 64, 64 )
+position = Vector2( 48, 64 )
 
 [node name="Rat" parent="." instance=ExtResource( 6 )]
 position = Vector2( 224, 80 )
 path_finder_path = NodePath("../TileMapPathFinder")
 
 [node name="Light2D" type="Light2D" parent="."]
+visible = false
 position = Vector2( 151.969, 64.9688 )
 scale = Vector2( 240.063, 62.0625 )
 texture = ExtResource( 7 )
 mode = 2
 
+[node name="Light" parent="." instance=ExtResource( 12 )]
+visible = false
+position = Vector2( 160, 80 )
+scale = Vector2( 1, 1 )
+mode = 2
+
 [node name="AmbientLight" parent="." instance=ExtResource( 8 )]
+color = Color( 0, 0, 0, 1 )
 _is_on = false
 
 [node name="HUD" type="CanvasLayer" parent="."]
