@@ -14,6 +14,11 @@ onready var wander_controller: Node2D = $Axis/WanderController
 onready var raycast := $Axis/RayCast2D as RayCast2D
 
 
+func _setup() -> void:
+	._setup()
+	call_deferred("on_lights_turned", _are_lights_on)
+
+
 func _on_lights_turned(value: bool) -> void:
 	
 	._on_lights_turned(value)

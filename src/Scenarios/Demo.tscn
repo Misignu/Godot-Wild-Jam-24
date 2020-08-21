@@ -120,7 +120,6 @@ mode = 2
 
 [node name="AmbientLight" parent="." instance=ExtResource( 8 )]
 color = Color( 0, 0, 0, 1 )
-_is_on = false
 
 [node name="HUD" type="CanvasLayer" parent="."]
 
