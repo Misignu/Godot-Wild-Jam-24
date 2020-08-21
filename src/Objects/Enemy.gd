@@ -8,7 +8,7 @@ const PATH_TO_POSITION := NodePath(":global_position")
 
 export var path_finder_path: NodePath setget set_path_finder_path
 
-var _are_lights_on: bool setget _on_lights_turned
+var _are_lights_on: bool = true setget _on_lights_turned
 var target_point: Vector2
 var target_position: Vector2 setget set_target_position
 var path: PoolVector2Array
