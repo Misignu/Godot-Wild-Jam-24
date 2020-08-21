@@ -6,7 +6,6 @@
 [ext_resource path="res://src/UI/PauseOverlay.tscn" type="PackedScene" id=4]
 [ext_resource path="res://src/UI/TitleScreen.gd" type="Script" id=5]
 
-
 [sub_resource type="DynamicFont" id=1]
 size = 32
 font_data = ExtResource( 1 )
