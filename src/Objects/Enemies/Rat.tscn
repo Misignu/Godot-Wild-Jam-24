@@ -8,6 +8,7 @@
 script = ExtResource( 2 )
 
 [node name="WanderController" parent="Axis" index="1" instance=ExtResource( 3 )]
+visible = false
 
 [node name="RayCast2D" type="RayCast2D" parent="Axis" index="2"]
 cast_to = Vector2( 0, 77 )
