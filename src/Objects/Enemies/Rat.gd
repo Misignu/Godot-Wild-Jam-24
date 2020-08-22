@@ -16,7 +16,7 @@ onready var raycast := $Axis/RayCast2D as RayCast2D
 
 func _setup() -> void:
 	._setup()
-	call_deferred("on_lights_turned", _are_lights_on)
+	call_deferred("_on_lights_turned", _are_lights_on)
 
 
 func _on_lights_turned(value: bool) -> void:
@@ -36,12 +36,14 @@ func _on_target_achieved() -> void:
 		
 		States.IDLE:
 			return
-	
-	if player_detection.can_see_player():
-		_attack(player_detection.player)
-		state = States.ATTACK
 		
-	else:
+		States.FOLLOW:
+			
+			if player_detection.player != null:
+				_attack(player_detection.player)
+				state = States.ATTACK
+	
+	if not player_detection.can_see_player():
 		wander_controller.start_wander_timer()
 		state = States.IDLE
 
